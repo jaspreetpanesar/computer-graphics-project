@@ -2,7 +2,7 @@
 
 An interactive 3D model planet, created using threejs.
 
-Created by Brendan Micallef, Laith Noaman, Jonathan Noujaim, Jaspreet Panesar and Zenne Randerath
+Created by Brendan Micallef, Laith Noaman, Jonathon Noujaim, Jaspreet Panesar and Zenne Randerath
 
 
 ## Tasks

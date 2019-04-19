@@ -20,7 +20,19 @@
         <script src="libraries/OrbitControls.js"></script>
 
         <!-- import scripts -->
-        <script src="js/render.js"></script>
-        <script src="js/earth.js"></script>
+        <script src="js/main.js"></script>
+        <script src="js/planet.js"></script>
+
+        <!-- run main -->
+        <script>
+
+            // fps display
+            // javascript:(function(){var script=document.createElement('script');script.onload=function(){var stats=new Stats();document.body.appendChild(stats.dom);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='//mrdoob.github.io/stats.js/build/stats.min.js';document.head.appendChild(script);})()
+
+            load();
+            start();
+        </script>
+
+
     </body>
 </html>

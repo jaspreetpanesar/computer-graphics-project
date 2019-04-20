@@ -62,21 +62,21 @@ function load() {
         renderer.render(scene, camera);
     });
 
+    // add ambient light
+    var light = new THREE.AmbientLight( 0x404040 ); // soft white light
+    scene.add( light );
 
     // create elements
     elements.push(new Sun('sun', 20, position=new THREE.Vector3(0, 0, 0)));
-
     elements.push(new Planet(
                     name='earth', 
                     radius=5, 
-                    position=new THREE.Vector3(30, 0, 0),
+                    position=new THREE.Vector3(50, 0, 0),
                     rotation=new THREE.Vector3(),
                     rot_speed=new THREE.Vector3(0, 0.1, 0),
                     orbit_speed = 0,
                     parent_obj=elements[0] // sun
                 ));
-
-
 
     // add elements to scene
     for (var i=0; i<elements.length; i++)

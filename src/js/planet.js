@@ -17,10 +17,13 @@ class Planet {
 
         // generated fields
         this.geometry = new THREE.SphereGeometry(this.radius, Planet.segments, Planet.segments);
-        this.material = new THREE.MeshBasicMaterial();
+        this.material = new THREE.MeshPhongMaterial();
         this.material.color = new THREE.Color(0, 0.6, 1);
-        this.material.wireframe = true;
+        this.material.wireframe = false;
+        this.material.castShadow = true;
+
         this.model = new THREE.Mesh(this.geometry, this.material);
+        this.model.recieveShadow = true;
 
         // set original position
         this.model.position.set(position.x, position.y, position.z);

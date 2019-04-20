@@ -8,12 +8,11 @@ Created by Brendan Micallef, Laith Noaman, Jonathon Noujaim, Jaspreet Panesar an
 ## Tasks
 
 #### Sprint 1 (15/4 - 28/4)
-- [ ] static sun sphere point light
+- [x] static sun sphere point light
 - [ ] camera (freecam) which can be moved freely around the environment
-- [ ] earth sphere which rotates at a fixed speed
+- [x] earth sphere which rotates at a fixed speed
 - [ ] earth sphere orbits around the sun at fixed distance and speed
 - [ ] second sphere on top of base earth sphere with adjustable diameter to simulate ocean level
-- [ ] visible day/night cycle from sunlight, orbit and earth rotation
 
 #### Sprint 2 (29/4 - 12/5)
 - [ ] second camera (orbital) which orbits around the earth

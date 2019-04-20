@@ -3,7 +3,8 @@ class Ocean {
 
     static color = new THREE.Color(0, 0.6, 1); // ocean color
     static segments = 32;
-    static updatemodifier = 0.001;
+    // static updatemodifier = 0.001;
+    static updatemodifier = 0.01;
     static sealevel = 0.1; // starting position of ocean is radius + sealevel
 
     constructor(parent_obj, radius, minimum=0.5, maximum=0.5) {
@@ -23,8 +24,6 @@ class Ocean {
         this.model = new THREE.Mesh(this.geometry, this.material);
         this.model.recieveShadow = true;
 
-        this.move();
-
         this.level = radius;
         this.scale = 1;
     }
@@ -43,21 +42,6 @@ class Ocean {
         this.model.scale.z = this.scale;
     }
 
-
-    move() {
-        this.model.position.set(
-                this.parent_obj.model.position.x, 
-                this.parent_obj.model.position.y, 
-                this.parent_obj.model.position.z, 
-                );
-    }
-
-    // allow for rotation so there is no clipping with parent obj
-    rotate(angle = THREE.Vector3()) {
-        this.model.rotation.x += angle.x;
-        this.model.rotation.y += angle.y;
-        this.model.rotation.z += angle.z;
-    }
 
     update() {
 

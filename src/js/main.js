@@ -5,6 +5,8 @@ var scene, ratio, renderer, camera, controls;
 var elements = [];
 var running = false;
 
+var time_delta = 1;
+
 // runs function every frame to render scene changes on screen
 var updateloop = function() {
 
@@ -41,8 +43,8 @@ function load() {
 
     // default camera (perspective)
     camera = new THREE.PerspectiveCamera(45, ratio, 0.1, 1000);
-    camera.position.set(0, 0, 20);
-    camera.lookAt(0, 0, 1);
+    camera.position.set(0, 0, 100);
+    // camera.lookAt(0, 0, 1);
 
     // controls
     controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -62,8 +64,17 @@ function load() {
 
 
     // create elements
-    // elements.push(new Planet('earth', 5, rot_speed=0.1));
-    elements.push(new Planet('earth2', 5, rot_speed=0.8));
+    elements.push(new Sun('sun', 20, position=new THREE.Vector3(0, 0, 0)));
+
+    elements.push(new Planet(
+                    name='earth', 
+                    radius=5, 
+                    position=new THREE.Vector3(30, 0, 0),
+                    rotation=new THREE.Vector3(),
+                    rot_speed=new THREE.Vector3(0, 0.1, 0),
+                    orbit_speed = 0,
+                    parent_obj=elements[0] // sun
+                ));
 
 
 

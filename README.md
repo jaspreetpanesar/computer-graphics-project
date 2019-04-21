@@ -12,7 +12,7 @@ Created by Brendan Micallef, Laith Noaman, Jonathon Noujaim, Jaspreet Panesar an
 - [ ] camera (freecam) which can be moved freely around the environment
 - [x] earth sphere which rotates at a fixed speed
 - [ ] earth sphere orbits around the sun at fixed distance and speed
-- [ ] second sphere on top of base earth sphere with adjustable diameter to simulate ocean level
+- [x] second sphere on top of base earth sphere with adjustable diameter to simulate ocean level
 
 #### Sprint 2 (29/4 - 12/5)
 - [ ] second camera (orbital) which orbits around the earth

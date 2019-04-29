@@ -6,6 +6,7 @@ var elements = [];
 
 var running = false;
 var debug = false;
+var ambientlight;
 
 var time_delta = 1;
 
@@ -39,6 +40,8 @@ function load() {
     // setup renderer
     renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     // add renderer to html webpage
     document.getElementById("render").appendChild(renderer.domElement);
@@ -65,23 +68,34 @@ function load() {
     });
 
     // add ambient light
-    var light = new THREE.AmbientLight( 0x404040 ); // soft white light
-    // var light = new THREE.AmbientLight(new THREE.Color(1, 1, 1)); // soft white light
-    scene.add( light );
+    ambientlight = new THREE.AmbientLight(new THREE.Color(0.12, 0.12, 0.12));
+    // ambientlight = new THREE.AmbientLight( 0x404040 ); // soft white light
+    // ambientlight = new THREE.AmbientLight(new THREE.Color(1, 1, 1)); // soft white light
+    scene.add(ambientlight);
 
     // create elements
     elements.push(new Sun('sun', 20, position=new THREE.Vector3(0, 0, 0)));
     elements.push(new Planet(
                     name='earth', 
                     radius=5, 
-                    position=new THREE.Vector3(90, 0, 0),
+                    position=new THREE.Vector3(30, 0, 0),
                     // position=new THREE.Vector3(0, 0, 0),
                     rotation=new THREE.Vector3(),
-                    rot_speed=new THREE.Vector3(0, 0.1, 0),
+                    rot_speed=new THREE.Vector3(0, 0.101, 0),
                     orbit_speed = 0,
                     parent_obj=elements[0],
                     has_ocean=true,
                 ));
+    elements.push(new Planet(
+                name='mars', 
+                radius=3, 
+                // position=new THREE.Vector3(-40, 0, 50), 
+                position=new THREE.Vector3(50,0,0),
+                rotation=new THREE.Vector3(), 
+                rot_speed=new THREE.Vector3(0, 0, 1), 
+                orbit_speed=0, 
+                parent_obj=elements[0], 
+                has_ocean=false));
 
     // add elements to scene
     for (var i=0; i<elements.length; i++)
@@ -128,10 +142,14 @@ function stop() {
 }
 
 function toggle_debug() {
-    if (debug)
+    if (debug) {
         debug = false;
-    else
+        ambientlight.color = new THREE.Color(0.12, 0.12, 0.12);
+    }
+    else {
         debug = true;
+        ambientlight.color = new THREE.Color(1, 1, 1);
+    }
 
     for (var i=0; i<elements.length; i++)
         elements[i].wireframe(debug);

@@ -18,19 +18,17 @@ class Planet {
 
         // generated fields
         this.geometry = new THREE.SphereGeometry(radius, Planet.segments, Planet.segments);
-        this.material = new THREE.MeshPhongMaterial();
+        this.material = new THREE.MeshLambertMaterial();
         this.material.color = Planet.color;
         this.material.wireframe = debug;
-        this.material.castShadow = true;
-
         this.model = new THREE.Mesh(this.geometry, this.material);
-        this.model.recieveShadow = true;
+        this.model.castShadow = true;
+        this.model.receiveShadow = true;
 
         // grouping of all planet objects and set positions
         this.planet = new THREE.Group();
         this.planet.position.set(position.x, position.y, position.z);
         this.planet.rotation.set(rotation.x, rotation.y, rotation.z);
-
         this.planet.add(this.model);
 
         // create ocean level if required
@@ -41,10 +39,18 @@ class Planet {
             this.ocean = null;
         }
 
+        // // moon test
+        // var geometry = new THREE.SphereGeometry(1, Planet.segments, Planet.segments);
+        // var material = new THREE.MeshLambertMaterial();
+        // this.moon = new THREE.Mesh(geometry, material);
+        // this.planet.add(this.moon);
+        // this.moon.position.set(this.radius+2, 0, 0);
+
+
     }
 
 
-    // move the planet
+    // move the planet using relative coordinates
     moveto(position=new THREE.Vector3()) {
         this.planet.position.x += position.x;
         this.planet.position.y += position.y;
@@ -53,25 +59,11 @@ class Planet {
 
 
     // rotate in place (using Group object)
+    // TODO rotate by an angle instead of value, as objects that are further away from the center position rotate much faster than those near the center.
     rotate() {
-
-        // this.planet.rotation.x += this.rot_speed.x;
-        // this.planet.rotation.y += this.rot_speed.y;
-        // this.planet.rotation.z += this.rot_speed.z;
-
-        this.planet.rotation.x += 0;
-        this.planet.rotation.y += 0.101;
-        this.planet.rotation.z += 0;
-
-        // this.model.geometry.center();
-        // this.model.rotation.x += this.rot_speed.x;
-        // this.model.rotation.y += this.rot_speed.y;
-        // this.model.rotation.z += this.rot_speed.z;
-
-        // // rotate ocean also so there is no clipping with planet
-        // if (this.ocean)
-        //     this.ocean.rotate(this.rot_speed);
-
+        this.planet.rotation.x += this.rot_speed.x;
+        this.planet.rotation.y += this.rot_speed.y;
+        this.planet.rotation.z += this.rot_speed.z;
     }
 
 
@@ -97,9 +89,8 @@ class Planet {
     update() {
         // this.orbit();
         this.rotate();
-
-
-        // console.log(this.name + ' update called');
+        if (this.ocean)
+            this.ocean.update();
     }
 
     wireframe(show) {

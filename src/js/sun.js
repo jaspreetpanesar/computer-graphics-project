@@ -28,13 +28,16 @@ class Sun {
 
         // create light
         this.light = new THREE.PointLight(Sun.color, Sun.intensity, Sun.decay);
+        this.light.castShadow = true;
 
         // add light to the sun
-        this.model.add(this.light);
+        // this.model.add(this.light);
+        this.light.position.set(position.x, position.y, position.z);
 
     }
 
     show() {
+        scene.add(this.light);
         scene.add(this.model);
     }
 

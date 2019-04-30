@@ -78,28 +78,25 @@ function load() {
     elements.push(new Planet(
                     name='earth', 
                     radius=5, 
-                    position=new THREE.Vector3(30, 0, 0),
+                    position=new THREE.Vector3(60, 0, 0),
                     // position=new THREE.Vector3(0, 0, 0),
                     rotation=new THREE.Vector3(),
                     rot_speed=new THREE.Vector3(0, 0.101, 0),
-                    orbit_speed = 0,
-                    parent_obj=elements[0],
+                    orbit_speed = 0.001,
+                    parent_obj=elements[0], // sun
                     has_ocean=true,
                 ));
     elements.push(new Planet(
-                name='mars', 
-                radius=3, 
+                name='moon', 
+                radius=1, 
                 // position=new THREE.Vector3(-40, 0, 50), 
-                position=new THREE.Vector3(50,0,0),
+                position=new THREE.Vector3(10,0,0),
                 rotation=new THREE.Vector3(), 
-                rot_speed=new THREE.Vector3(0, 0, 1), 
-                orbit_speed=0, 
-                parent_obj=elements[0], 
+                rot_speed=new THREE.Vector3(0, 1.2, 0), 
+                orbit_speed=0.01,
+                parent_obj=elements[1], // earth
                 has_ocean=false));
 
-    // add elements to scene
-    for (var i=0; i<elements.length; i++)
-        elements[i].show();
 
     // start and stop elements updating using spacebar
     document.addEventListener('keydown', function(event) {

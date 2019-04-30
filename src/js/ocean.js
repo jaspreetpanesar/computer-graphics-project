@@ -21,6 +21,8 @@ class Ocean {
         this.material.wireframe = debug;
         this.model = new THREE.Mesh(this.geometry, this.material);
         this.model.receiveShadow = true;
+
+        scene.add(this.model)
     }
 
 

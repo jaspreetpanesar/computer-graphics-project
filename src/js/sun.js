@@ -25,26 +25,47 @@ class Sun {
 
         this.model = new THREE.Mesh(this.geometry, this.material);
         this.model.position.set(position.x, position.y, position.z);
+        scene.add(this.model);
 
         // create light
         this.light = new THREE.PointLight(Sun.color, Sun.intensity, Sun.decay);
         this.light.castShadow = true;
 
         // add light to the sun
-        // this.model.add(this.light);
-        this.light.position.set(position.x, position.y, position.z);
+        this.model.add(this.light);
+        scene.add(this.light);
 
     }
 
-    show() {
-        scene.add(this.light);
-        scene.add(this.model);
+    get_world_position(axis) {
+        var pos = new THREE.Vector3();
+        pos.setFromMatrixPosition(this.model.matrixWorld);
+        switch (axis) {
+            case 'x':
+                return pos.x;
+            case 'y':
+                return pos.y;
+            case 'z':
+                return pos.z;
+        }
+    }
+
+    get_position(axis) {
+        switch (axis) {
+            case 'x':
+                return this.model.position.x;
+            case 'y':
+                return this.model.position.y;
+            case 'z':
+                return this.model.position.z;
+        }
     }
 
 
     update() {
         // this.model.position.x -= 0.1;
     }
+
 
     wireframe(show) {
         this.material.wireframe = show;

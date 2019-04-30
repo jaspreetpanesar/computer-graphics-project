@@ -31,12 +31,23 @@ class Planet {
         this.planet.rotation.set(rotation.x, rotation.y, rotation.z);
         this.planet.add(this.model);
 
+        scene.add(this.planet);
+
         // create ocean level if required
         if (has_ocean) {
             this.ocean = new Ocean(this, radius);
             this.planet.add(this.ocean.model);
         } else {
             this.ocean = null;
+        }
+
+        if (this.parent_obj) {
+            this.orbitGroup = new THREE.Group();
+            this.orbitGroup.add(this.planet);
+            this.parent_obj.model.add(this.orbitGroup);
+            
+
+            scene.add(this.orbitGroup);
         }
 
         // // moon test
@@ -46,7 +57,20 @@ class Planet {
         // this.planet.add(this.moon);
         // this.moon.position.set(this.radius+2, 0, 0);
 
+    }
 
+
+    addOrbitGroup() {
+        if (this.parent_obj) {
+            // create pivot at parent coords
+            // add pivot to parent
+            // add this.model to pivot
+
+            this.orbitGroup = new THREE.Group();
+            this.orbitGroup.add(this.planet);
+            this.parent_obj.model.add(this.orbitGroup);
+            console.log(this.parent_obj.model.children);
+        }
     }
 
 
@@ -69,29 +93,50 @@ class Planet {
 
     // rotate around parent_obj
     orbit() {
-        var axis = new THREE.Vector3(0.1, 0, 0);
-        var theta = Math.PI/9;
+        this.orbitGroup.position.set(
+                    this.parent_obj.get_world_position('x'),
+                    this.parent_obj.get_world_position('y'),
+                    this.parent_obj.get_world_position('z')
+                );
 
-        this.model.position.sub(parent_obj.model.position);
-        this.model.position.applyAxisAngle(axis, theta);
-        this.model.position.add(parent_obj.model.position);
-
-        this.model.rotateOnAxis(axis, theta);
+        this.orbitGroup.rotation.y += this.orbit_speed;
     }
 
+    get_world_position(axis) {
+        var pos = new THREE.Vector3();
+        pos.setFromMatrixPosition(this.planet.matrixWorld);
+        switch (axis) {
+            case 'x':
+                return pos.x;
+            case 'y':
+                return pos.y;
+            case 'z':
+                return pos.z;
+        }
+    }
 
-    // add the planet to the scene
-    show() {
-        scene.add(this.planet);
+    get_position(axis) {
+        switch (axis) {
+            case 'x':
+                return this.planet.position.x;
+            case 'y':
+                return this.planet.position.y;
+            case 'z':
+                return this.planet.position.z;
+        }
     }
 
 
     update() {
-        // this.orbit();
+        if (this.parent_obj)
+            this.orbit();
+
         this.rotate();
+
         if (this.ocean)
             this.ocean.update();
     }
+
 
     wireframe(show) {
         this.material.wireframe = show;

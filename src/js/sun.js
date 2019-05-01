@@ -7,7 +7,8 @@ class Sun {
     static suncolor = new THREE.Color(1, 1, 0.7);
     static color = new THREE.Color(1, 1, 1);
     static intensity = 1;
-    static decay = 1000;
+    static distance = 0; // 0 for no limit
+    static decay = 2;
 
     static segments = 64;
 
@@ -28,7 +29,7 @@ class Sun {
         scene.add(this.model);
 
         // create light
-        this.light = new THREE.PointLight(Sun.color, Sun.intensity, Sun.decay);
+        this.light = new THREE.PointLight(Sun.color, Sun.intensity, Sun.distance, Sun.decay);
         this.light.castShadow = true;
 
         // add light to the sun
@@ -63,7 +64,6 @@ class Sun {
 
 
     update() {
-        // this.model.position.x -= 0.1;
     }
 
 

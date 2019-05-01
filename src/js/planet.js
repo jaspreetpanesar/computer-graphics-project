@@ -85,9 +85,9 @@ class Planet {
     // rotate in place (using Group object)
     // TODO rotate by an angle instead of value, as objects that are further away from the center position rotate much faster than those near the center.
     rotate() {
-        this.planet.rotation.x += this.rot_speed.x;
-        this.planet.rotation.y += this.rot_speed.y;
-        this.planet.rotation.z += this.rot_speed.z;
+        this.planet.rotation.x += (this.rot_speed.x * time_delta);
+        this.planet.rotation.y += (this.rot_speed.y * time_delta);
+        this.planet.rotation.z += (this.rot_speed.z * time_delta);
     }
 
 
@@ -99,7 +99,7 @@ class Planet {
                     this.parent_obj.get_world_position('z')
                 );
 
-        this.orbitGroup.rotation.y += this.orbit_speed;
+        this.orbitGroup.rotation.y += (this.orbit_speed * time_delta);
     }
 
     get_world_position(axis) {

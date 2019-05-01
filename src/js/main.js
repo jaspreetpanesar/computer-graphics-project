@@ -9,6 +9,7 @@ var debug = false;
 var ambientlight;
 
 var time_delta = 1;
+var time_change = 0.01;
 
 // runs function every frame to render scene changes on screen
 var updateloop = function() {
@@ -47,12 +48,13 @@ function load() {
     document.getElementById("render").appendChild(renderer.domElement);
 
     // default camera (perspective)
-    camera = new THREE.PerspectiveCamera(45, ratio, 0.1, 1000);
+    camera = new THREE.PerspectiveCamera(45, ratio, 0.1, 2000);
     camera.position.set(0, 0, 200);
     // camera.lookAt(0, 0, 1);
 
     // controls
     controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.maxDistance = 1500;
 
     // updates camera and scene aspect and size to match window size
     // runs when the window is resized
@@ -97,7 +99,6 @@ function load() {
                 parent_obj=elements[1], // earth
                 has_ocean=false));
 
-
     // start and stop elements updating using spacebar
     document.addEventListener('keydown', function(event) {
         // console.log(event.keyCode);
@@ -113,6 +114,24 @@ function load() {
             case 68:
                 toggle_debug();
                 break;
+
+            // speed up time
+            case 187:
+                if (time_delta+time_change <= 50)
+                    time_delta += time_change;
+                break;
+
+            // slow down time
+            case 189:
+                if (time_delta-time_change >= 0)
+                    time_delta -= time_change;
+                break;
+
+            // reset time
+            case 48:
+                time_delta = 1;
+                break;
+
         }
     }, false);
 

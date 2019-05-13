@@ -9,6 +9,7 @@ class CustomCamera {
 
     state = "orbit" // orbit or full
 
+
     constructor(child=null) {
         this.camera = new THREE.PerspectiveCamera(CustomCamera.fov, CustomCamera.ratio, CustomCamera.near, CustomCamera.far);
         this.camera.position.set(0, 0, 200);
@@ -43,7 +44,10 @@ class CustomCamera {
                         this.child.get_world_position('z')
                         );
             }
-        } else {
+        } else if (this.state == "full") {
+          this.camera.position.set(0, 0, 200);
+          this.camera.rotation.set(0,0,0);
+
 
         }
     }

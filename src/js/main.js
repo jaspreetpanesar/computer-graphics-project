@@ -10,10 +10,9 @@ var ambientlight;
 
 var time_delta = 1;
 var time_change = 0.1;
+var camZoom = 1;
 
 var camera_child_index = 1;
-
-var gui;
 
 // runs function every frame to render scene changes on screen
 var updateloop = function() {
@@ -157,7 +156,7 @@ function load() {
             // change camera child (left)
             case 69:
                 camera_child_index -= 1;
-                if (camera_child_index < 0)
+                if (camera_child_index < 1)
                     camera_child_index = elements.length-1;
                 camera.change_child(elements[camera_child_index]);
                 break;
@@ -166,24 +165,19 @@ function load() {
             case 81:
                 camera_child_index += 1;
                 if (camera_child_index > elements.length-1)
-                    camera_child_index = 0;
+                    camera_child_index = 1;
                 camera.change_child(elements[camera_child_index]);
 
                 break;
 
+                case 67:
+                  camera.toggle_state();
+
+                    break;
+
+
         }
     }, false);
-
-    gui = new dat.GUI({
-      height: 5 * 32 - 1
-    });
-
-    for (var i=1; i<elements.length; i++){
-      gui.add(elements[i], 'name');
-      gui.add(elements[i], 'radius');
-      gui.add(elements[i], 'orbit_speed');
-    }
-
 
 
 }

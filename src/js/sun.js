@@ -26,7 +26,7 @@ class Sun {
 
         this.model = new THREE.Mesh(this.geometry, this.material);
         this.model.position.set(position.x, position.y, position.z);
-        // scene.add(this.model);
+        scene.add(this.model);
 
         // create light
         this.light = new THREE.PointLight(Sun.color, Sun.intensity, Sun.distance, Sun.decay);
@@ -36,6 +36,7 @@ class Sun {
         this.model.add(this.light);
         scene.add(this.light);
 
+        /*
         // lenseflare
         var textureLoader = new THREE.TextureLoader();
         var textureFlare0 = textureLoader.load( 'textures/lensflare0.png' );
@@ -48,6 +49,7 @@ class Sun {
         lensflare.addElement( new THREE.LensflareElement( textureFlare3, 120, 0.9 ) );
         lensflare.addElement( new THREE.LensflareElement( textureFlare3, 70, 1 ) );
         this.light.add( lensflare );
+        */
 
     }
 

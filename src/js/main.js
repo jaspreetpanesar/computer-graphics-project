@@ -13,12 +13,14 @@ var time_change = 0.1;
 
 var camera_child_index = 1;
 
+var gui;
+
 // runs function every frame to render scene changes on screen
 var updateloop = function() {
 
     if (running) {
 
-        /* 
+        /*
            each time this is run, loop through elements array
            and call .update() function for each element.
         */
@@ -83,8 +85,8 @@ function load() {
     elements.push(new Sun('sun', 20, position=new THREE.Vector3(0, 0, 0)));
 
     elements.push(new Planet(
-                    name='earth', 
-                    radius=5, 
+                    name='earth',
+                    radius=5,
                     position=new THREE.Vector3(400, 0, 0),
                     // position=new THREE.Vector3(0, 0, 0),
                     rotation=new THREE.Vector3(),
@@ -95,12 +97,12 @@ function load() {
                 ));
 
     elements.push(new Planet(
-                    name='moon', 
-                    radius=1, 
-                    // position=new THREE.Vector3(-40, 0, 50), 
+                    name='moon',
+                    radius=1,
+                    // position=new THREE.Vector3(-40, 0, 50),
                     position=new THREE.Vector3(10,0,0),
-                    rotation=new THREE.Vector3(), 
-                    rot_speed=new THREE.Vector3(0, 1.2, 0), 
+                    rotation=new THREE.Vector3(),
+                    rot_speed=new THREE.Vector3(0, 1.2, 0),
                     orbit_speed=0.01,
                     parent_obj=elements[1], // earth
                     has_ocean=false));
@@ -172,6 +174,17 @@ function load() {
         }
     }, false);
 
+    gui = new dat.GUI({
+      height: 5 * 32 - 1
+    });
+
+    for (var i=1; i<elements.length; i++){
+      gui.add(elements[i], 'name');
+      gui.add(elements[i], 'radius');
+      gui.add(elements[i], 'orbit_speed');
+    }
+
+
 
 }
 
@@ -208,4 +221,3 @@ function toggle_debug() {
         elements[i].wireframe(debug);
 
 }
-

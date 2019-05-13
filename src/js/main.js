@@ -26,7 +26,7 @@ var updateloop = function() {
 
     }
 
-    renderer.render(scene, camera);
+    renderer.render(scene, camera.camera);
     controls.update();
     requestAnimationFrame(updateloop);
 }
@@ -49,26 +49,11 @@ function load() {
     document.getElementById("render").appendChild(renderer.domElement);
 
     // default camera (perspective)
-    camera = new THREE.PerspectiveCamera(45, ratio, 0.1, 2000);
-    camera.position.set(0, 0, 200);
-    // camera.lookAt(0, 0, 1);
+    camera = new CustomCamera();
 
     // controls
-    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls = new THREE.OrbitControls(camera.camera, renderer.domElement);
     controls.maxDistance = 1500;
-
-    // updates camera and scene aspect and size to match window size
-    // runs when the window is resized
-    window.addEventListener('resize', function() {
-        var width = window.innerWidth;
-        var height = window.innerHeight;
-
-        renderer.setSize(width, height);
-        camera.aspect = width/height;
-        camera.updateProjectionMatrix();
-
-        renderer.render(scene, camera);
-    });
 
     // add ambient light
     ambientlight = new THREE.AmbientLight(new THREE.Color(0.12, 0.12, 0.12));
@@ -84,11 +69,11 @@ function load() {
     elements.push(new Planet(
                     name='earth', 
                     radius=5, 
-                    position=new THREE.Vector3(60, 0, 0),
+                    position=new THREE.Vector3(400, 0, 0),
                     // position=new THREE.Vector3(0, 0, 0),
                     rotation=new THREE.Vector3(),
                     rot_speed=new THREE.Vector3(0, 0.101, 0),
-                    orbit_speed = 0.001,
+                    orbit_speed = 0.000,
                     parent_obj=elements[0], // sun
                     has_ocean=true,
                 ));
@@ -107,7 +92,7 @@ function load() {
     elements.push(new Planet(
                     name='mars',
                     radius=3,
-                    position=new THREE.Vector3(90, 0, 10),
+                    position=new THREE.Vector3(250, 0, 10),
                     rotation=new THREE.Vector3(0,0,0),
                     rot_speed=new THREE.Vector3(0, 0.01, 0),
                     orbit_speed=0.003,

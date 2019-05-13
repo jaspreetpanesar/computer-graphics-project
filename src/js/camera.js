@@ -24,11 +24,7 @@ class CustomCamera {
 
     change_child(child) {
         this.child = child;
-        this.camera.lookAt(
-            this.child.get_world_position('x'),
-            this.child.get_world_position('y'),
-            this.child.get_world_position('z')
-            );
+
     }
 
 
@@ -40,6 +36,12 @@ class CustomCamera {
                     this.child.get_world_position('y'),
                     this.child.get_world_position('z')
                     );
+
+                    this.camera.lookAt(
+                        this.child.get_world_position('x'),
+                        this.child.get_world_position('y'),
+                        this.child.get_world_position('z')
+                        );
             }
         } else {
 
@@ -48,12 +50,3 @@ class CustomCamera {
 
 
 }
-
-
-
-
-
-
-
-
-

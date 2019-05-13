@@ -32,7 +32,7 @@ class CustomCamera {
         if (this.state == "orbit") {
             if (this.child) {
                 this.camera.position.set(
-                    this.child.get_world_position('x'),
+                    this.child.get_world_position('x') - 100,
                     this.child.get_world_position('y'),
                     this.child.get_world_position('z')
                     );

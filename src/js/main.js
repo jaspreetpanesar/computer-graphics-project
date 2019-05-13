@@ -26,6 +26,7 @@ var updateloop = function() {
 
     }
 
+    camera.update();
     renderer.render(scene, camera.camera);
     controls.update();
     requestAnimationFrame(updateloop);
@@ -86,7 +87,7 @@ function load() {
                     // position=new THREE.Vector3(0, 0, 0),
                     rotation=new THREE.Vector3(),
                     rot_speed=new THREE.Vector3(0, 0.101, 0),
-                    orbit_speed = 0.000,
+                    orbit_speed = 0.001,
                     parent_obj=elements[0], // sun
                     has_ocean=true,
                 ));
@@ -112,6 +113,8 @@ function load() {
                     parent_obj=elements[0],
                     has_ocean=false
                 ));
+
+    camera.change_child(elements[1]);
 
 
     // start and stop elements updating using spacebar

@@ -12,9 +12,6 @@ class CustomCamera {
     constructor(child=null) {
         this.camera = new THREE.PerspectiveCamera(CustomCamera.fov, CustomCamera.ratio, CustomCamera.near, CustomCamera.far);
         this.camera.position.set(0, 0, 200);
-
-        // this.camera.lookAt(0, 0, 1);
-
         this.child = child;
     }
 
@@ -27,17 +24,23 @@ class CustomCamera {
 
     change_child(child) {
         this.child = child;
+        this.camera.lookAt(
+            this.child.get_world_position('x'),
+            this.child.get_world_position('y'),
+            this.child.get_world_position('z')
+            );
     }
 
 
     update() {
-        if (state == "orbit") {
-            if (this.child)
+        if (this.state == "orbit") {
+            if (this.child) {
                 this.camera.position.set(
                     this.child.get_world_position('x'),
                     this.child.get_world_position('y'),
                     this.child.get_world_position('z')
-                        );
+                    );
+            }
         } else {
 
         }

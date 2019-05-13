@@ -9,7 +9,7 @@ var debug = false;
 var ambientlight;
 
 var time_delta = 1;
-var time_change = 0.01;
+var time_change = 0.1;
 
 // runs function every frame to render scene changes on screen
 var updateloop = function() {
@@ -39,6 +39,7 @@ function load() {
     ratio = window.innerWidth/window.innerHeight;
 
     // setup renderer
+
     renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
@@ -75,8 +76,11 @@ function load() {
     // ambientlight = new THREE.AmbientLight(new THREE.Color(1, 1, 1)); // soft white light
     scene.add(ambientlight);
 
+    var starfield = new Starfield();
+
     // create elements
     elements.push(new Sun('sun', 20, position=new THREE.Vector3(0, 0, 0)));
+
     elements.push(new Planet(
                     name='earth', 
                     radius=5, 
@@ -88,16 +92,29 @@ function load() {
                     parent_obj=elements[0], // sun
                     has_ocean=true,
                 ));
+
     elements.push(new Planet(
-                name='moon', 
-                radius=1, 
-                // position=new THREE.Vector3(-40, 0, 50), 
-                position=new THREE.Vector3(10,0,0),
-                rotation=new THREE.Vector3(), 
-                rot_speed=new THREE.Vector3(0, 1.2, 0), 
-                orbit_speed=0.01,
-                parent_obj=elements[1], // earth
-                has_ocean=false));
+                    name='moon', 
+                    radius=1, 
+                    // position=new THREE.Vector3(-40, 0, 50), 
+                    position=new THREE.Vector3(10,0,0),
+                    rotation=new THREE.Vector3(), 
+                    rot_speed=new THREE.Vector3(0, 1.2, 0), 
+                    orbit_speed=0.01,
+                    parent_obj=elements[1], // earth
+                    has_ocean=false));
+
+    elements.push(new Planet(
+                    name='mars',
+                    radius=3,
+                    position=new THREE.Vector3(90, 0, 10),
+                    rotation=new THREE.Vector3(0,0,0),
+                    rot_speed=new THREE.Vector3(0, 0.01, 0),
+                    orbit_speed=0.003,
+                    parent_obj=elements[0],
+                    has_ocean=false
+                ));
+
 
     // start and stop elements updating using spacebar
     document.addEventListener('keydown', function(event) {

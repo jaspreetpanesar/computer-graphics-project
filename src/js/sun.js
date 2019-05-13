@@ -6,7 +6,7 @@ class Sun {
 
     static suncolor = new THREE.Color(1, 1, 0.7);
     static color = new THREE.Color(1, 1, 1);
-    static intensity = 1;
+    static intensity = 1.5;
     static distance = 0; // 0 for no limit
     static decay = 2;
 
@@ -26,7 +26,7 @@ class Sun {
 
         this.model = new THREE.Mesh(this.geometry, this.material);
         this.model.position.set(position.x, position.y, position.z);
-        scene.add(this.model);
+        // scene.add(this.model);
 
         // create light
         this.light = new THREE.PointLight(Sun.color, Sun.intensity, Sun.distance, Sun.decay);
@@ -35,6 +35,19 @@ class Sun {
         // add light to the sun
         this.model.add(this.light);
         scene.add(this.light);
+
+        // lenseflare
+        var textureLoader = new THREE.TextureLoader();
+        var textureFlare0 = textureLoader.load( 'textures/lensflare0.png' );
+        var textureFlare3 = textureLoader.load( 'textures/lensflare3.png' );
+
+        var lensflare = new THREE.Lensflare();
+        lensflare.addElement( new THREE.LensflareElement( textureFlare0, 700, 0, this.light.color ) );
+        lensflare.addElement( new THREE.LensflareElement( textureFlare3, 60, 0.6 ) );
+        lensflare.addElement( new THREE.LensflareElement( textureFlare3, 70, 0.7 ) );
+        lensflare.addElement( new THREE.LensflareElement( textureFlare3, 120, 0.9 ) );
+        lensflare.addElement( new THREE.LensflareElement( textureFlare3, 70, 1 ) );
+        this.light.add( lensflare );
 
     }
 

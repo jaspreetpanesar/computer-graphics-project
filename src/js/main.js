@@ -11,7 +11,7 @@ var ambientlight;
 var time_delta = 1;
 var time_change = 0.1;
 
-var camera_child_index = 0;
+var camera_child_index = 1;
 
 // runs function every frame to render scene changes on screen
 var updateloop = function() {
@@ -116,7 +116,7 @@ function load() {
                     has_ocean=false
                 ));
 
-    camera.change_child(elements[0]);
+    camera.change_child(elements[camera_child_index]);
 
 
     // start and stop elements updating using spacebar
@@ -143,7 +143,7 @@ function load() {
 
             // slow down time
             case 189:
-                if (time_delta-time_change >= 0)
+                if (time_delta-time_change >= -50)
                     time_delta -= time_change;
                 break;
 

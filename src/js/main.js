@@ -55,6 +55,19 @@ function load() {
     controls = new THREE.OrbitControls(camera.camera, renderer.domElement);
     controls.maxDistance = 1500;
 
+    // updates camera and scene aspect and size to match window size
+    // runs when the window is resized
+    window.addEventListener('resize', function() {
+        var width = window.innerWidth;
+        var height = window.innerHeight;
+
+        renderer.setSize(width, height);
+        camera.camera.aspect = width/height;
+        camera.camera.updateProjectionMatrix();
+
+        renderer.render(scene, camera.camera);
+    });
+
     // add ambient light
     ambientlight = new THREE.AmbientLight(new THREE.Color(0.12, 0.12, 0.12));
     // ambientlight = new THREE.AmbientLight( 0x404040 ); // soft white light

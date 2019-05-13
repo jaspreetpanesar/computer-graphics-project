@@ -2,30 +2,28 @@
 
 class CustomCamera {
 
+    static fov = 45;
+    static ratio = (window.innerWidth/window.innerHeight);
+    static near = 0.1;
+    static far = 2000;
+
     state = "orbit" // orbit or full
 
     constructor(child=null) {
-        this.camera = new THREE.PerspectiveCamera(45, ratio, 0.1, 2000);
+        this.camera = new THREE.PerspectiveCamera(CustomCamera.fov, CustomCamera.ratio, CustomCamera.near, CustomCamera.far);
         this.camera.position.set(0, 0, 200);
 
         // this.camera.lookAt(0, 0, 1);
 
         this.child = child;
-
-        // updates camera and scene aspect and size to match window size
-        // runs when the window is resized
-        window.addEventListener('resize', function() {
-            var width = window.innerWidth;
-            var height = window.innerHeight;
-
-            renderer.setSize(width, height);
-            this.camera.aspect = width/height;
-            this.camera.updateProjectionMatrix();
-
-            renderer.render(scene, this.camera);
-        });
     }
 
+    toggle_state() {
+        if (this.state == "orbit")
+            this.state = "full";
+        else
+            this.state = "orbit";
+    }
 
     change_child(child) {
         this.child = child;
@@ -33,13 +31,16 @@ class CustomCamera {
 
 
     update() {
-        if (state == "orbit")
+        if (state == "orbit") {
             if (this.child)
                 this.camera.position.set(
                     this.child.get_world_position('x'),
                     this.child.get_world_position('y'),
                     this.child.get_world_position('z')
                         );
+        } else {
+
+        }
     }
 
 

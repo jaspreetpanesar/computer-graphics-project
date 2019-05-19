@@ -1,18 +1,19 @@
 // main.js
 // stores main renderer, scene, resize function and update loop
 
-var scene, ratio, renderer, camera, controls;
-var elements = [];
+var scene, ratio, renderer, camera, controls, starfield, ambientlight, gui;
+
+var elements = [];  // all elements which require updates
+var planets = [];   // planets only
 
 var running = false;
 var debug = false;
-var ambientlight;
 
 var time_delta = 1;
 var time_change = 0.1;
 var camZoom = 1;
+var camera_child_index = 0;
 
-var camera_child_index = 1;
 
 // runs function every frame to render scene changes on screen
 var updateloop = function() {
@@ -78,7 +79,7 @@ function load() {
     // ambientlight = new THREE.AmbientLight(new THREE.Color(1, 1, 1)); // soft white light
     scene.add(ambientlight);
 
-    var starfield = new Starfield();
+    starfield = new Starfield();
 
     // create elements
     elements.push(new Sun('sun', 20, position=new THREE.Vector3(0, 0, 0)));
@@ -117,7 +118,9 @@ function load() {
                     has_ocean=false
                 ));
 
-    camera.change_child(elements[camera_child_index]);
+    // create an array with planets only
+    planets = [elements[1], elements[3]];
+    camera.change_child( planets[camera_child_index] );
 
 
     // start and stop elements updating using spacebar
@@ -138,49 +141,103 @@ function load() {
 
             // speed up time
             case 187:
-                if (time_delta+time_change <= 50)
-                    time_delta += time_change;
+                increase_time();
                 break;
 
             // slow down time
             case 189:
-                if (time_delta-time_change >= -50)
-                    time_delta -= time_change;
+                decrease_time();
                 break;
 
             // reset time
             case 48:
-                time_delta = 1;
+                reset_time();
                 break;
 
             // change camera child (left)
             case 69:
-                camera_child_index -= 1;
-                if (camera_child_index < 1)
-                    camera_child_index = elements.length-1;
-                camera.change_child(elements[camera_child_index]);
+                change_camera_focus(0);
                 break;
 
             // change camera child (right)
             case 81:
-                camera_child_index += 1;
-                if (camera_child_index > elements.length-1)
-                    camera_child_index = 1;
-                camera.change_child(elements[camera_child_index]);
-
+                change_camera_focus(1);
                 break;
 
-                case 67:
-                  camera.toggle_state();
-
-                    break;
+            case 67:
+                camera.toggle_state();
+                break;
 
 
         }
     }, false);
 
 
+    // GUI 
+    gui = new dat.GUI({
+        height: 5 * 32 - 1
+    });
+
+    for (var i=0; i<planets.length; i++){
+        gui.add(planets[i], 'name');
+        gui.add(planets[i], 'radius');
+        gui.add(planets[i], 'orbit_speed');
+    }
+
 }
+
+
+
+/*
+   Time functions
+*/
+function increase_time() {
+    if (time_delta+time_change <= 50)
+        time_delta += time_change;
+}
+
+function decrease_time() {
+    if (time_delta-time_change >= -50)
+        time_delta -= time_change;
+}
+
+function reset_time() {
+    time_delta = 1;
+}
+
+
+
+/*
+   Camera functions
+*/
+function toggle_camera_mode() {
+
+    // toggle camera mode
+    // update starfield rotation if required
+
+}
+
+
+// direction = 1 (forward) or 0 (backward)
+function change_camera_focus(direction) {
+    if (direction == 1) {
+        camera_child_index += 1;
+        if (camera_child_index > planets.length-1)
+            camera_child_index = 0;
+
+    } else if (direction == 0) {
+        camera_child_index -= 1;
+        if (camera_child_index < 0)
+            camera_child_index = planets.length-1;
+    }
+
+    camera.change_child( planets[camera_child_index] );
+}
+
+
+
+
+
 
 
 /*

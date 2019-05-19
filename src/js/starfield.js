@@ -6,13 +6,12 @@ class Starfield {
     static segments = 128;
     static color = new THREE.Color(1, 1, 1);
 
-    constructor(name='starfield', radius=500, position=new THREE.Vector3()) {
+    constructor(name='starfield', radius=1000, position=new THREE.Vector3()) {
         this.name = name;
         this.radius = radius;
         this.position = position;
 
-        // this.geometry = new THREE.SphereGeometry(this.radius, Starfield.segments, Starfield.segments);
-        this.geometry = new THREE.BoxGeometry(1000, 1000, 1000);
+        this.geometry = new THREE.SphereGeometry(this.radius, Starfield.segments, Starfield.segments);
 
         // load starfield texture and add to material
         var texture = new THREE.TextureLoader().load('textures/starfield.jpg');

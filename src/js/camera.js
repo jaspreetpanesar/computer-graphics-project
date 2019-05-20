@@ -20,6 +20,10 @@ class CustomCamera {
             child.add(this.camera);
     }
 
+    change_state(state) {
+        this.state = state;
+    }
+
     toggle_state() {
         if (this.state == "orbit") {
             this.camera.position.set(0, 1000, 0);

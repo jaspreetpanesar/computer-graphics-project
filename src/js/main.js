@@ -341,6 +341,20 @@ function change_camera_focus(direction) {
 }
 
 
+/*
+   change to a specific planet using
+   its index.
+*/
+function go_to_planet(index) {
+    if (index < 0 || index >= planets.length)
+        return;
+
+    camera_child_index = index;
+    camera.change_state("orbit");
+    camera.change_child( planets[camera_child_index] );
+}
+
+
 
 
 

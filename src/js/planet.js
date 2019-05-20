@@ -16,9 +16,23 @@ class Planet {
         this.orbit_speed = orbit_speed;
         this.parent_obj = parent_obj;
 
+
+
+        this.geometry = new THREE.IcosahedronGeometry(radius, 5);
+        this.material = new THREE.ShaderMaterial( {
+
+            uniforms: {
+                time: {type: "f", value: 0},
+                weight: {type: "f", value: 0.05*this.radius}
+            },
+            vertexShader: document.getElementById('vertexShader').textContent,
+            fragmentShader: document.getElementById('fragmentShader').textContent,
+        });
+
         // generated fields
-        this.geometry = new THREE.SphereGeometry(radius, Planet.segments, Planet.segments);
-        this.material = new THREE.MeshLambertMaterial();
+        // this.geometry = new THREE.SphereGeometry(radius, Planet.segments, Planet.segments);
+        // this.material = new THREE.MeshLambertMaterial();
+
         this.material.color = Planet.color;
         this.material.wireframe = debug;
         this.model = new THREE.Mesh(this.geometry, this.material);
@@ -32,6 +46,8 @@ class Planet {
         this.planet.add(this.model);
 
         scene.add(this.planet);
+
+        this.moons = []; // array of all connected moons
 
         // create ocean level if required
         if (has_ocean) {
@@ -50,12 +66,6 @@ class Planet {
             scene.add(this.orbitGroup);
         }
 
-        // // moon test
-        // var geometry = new THREE.SphereGeometry(1, Planet.segments, Planet.segments);
-        // var material = new THREE.MeshLambertMaterial();
-        // this.moon = new THREE.Mesh(geometry, material);
-        // this.planet.add(this.moon);
-        // this.moon.position.set(this.radius+2, 0, 0);
 
     }
 

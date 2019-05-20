@@ -168,12 +168,22 @@ function load() {
                 camera.toggle_state();
                 break;
 
+           case 87:
+                camera.ZoomAdder();
+              //  console.log("w pressed")
+                break;
+
+           case 83:
+                camera.ZoomSubtractor();
+              //  console.log("s pressed")
+           break;
+
 
         }
     }, false);
 
 
-    // GUI 
+    // GUI
     gui = new dat.GUI({
         height: 5 * 32 - 1
     });

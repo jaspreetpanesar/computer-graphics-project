@@ -6,6 +6,7 @@ class CustomCamera {
     static ratio = (window.innerWidth/window.innerHeight);
     static near = 0.1;
     static far = 2500;
+    zoom = 50;
 
     state = "orbit" // orbit or full
 
@@ -34,12 +35,20 @@ class CustomCamera {
 
     }
 
+    ZoomAdder(){
+      this.zoom = this.zoom -2
+    }
+
+    ZoomSubtractor(){
+      this.zoom = this.zoom +2
+
+    }
 
     update() {
         if (this.state == "orbit") {
             if (this.child) {
                 this.camera.position.set(
-                    this.child.get_world_position('x') - 50,
+                    this.child.get_world_position('x') - this.zoom,
                     this.child.get_world_position('y'),
                     this.child.get_world_position('z')
                     );

@@ -7,7 +7,7 @@ class Sun {
     static suncolor = new THREE.Color(1, 1, 0.7);
     static color = new THREE.Color(1, 1, 1);
     static intensity = 1.5;
-    static distance = 2000; // 0 for no limit | 2000 so it doesn't light starfield
+    static distance = 3000; // 0 for no limit | 2000 so it doesn't light starfield
     static decay = 2;
 
     static segments = 64;

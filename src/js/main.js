@@ -1,7 +1,7 @@
 // main.js
 // stores main renderer, scene, resize function and update loop
 
-var scene, ratio, renderer, camera, controls, ambientlight, gui;
+var scene, renderer, camera, controls, ambientlight, gui;
 
 var elements = [];  // all elements which require updates
 var planets = [];   // planets only
@@ -10,7 +10,7 @@ var running = false;
 var debug = false;
 
 var time_delta = 1;
-var time_change = 0.1;
+var time_change = 0.01;
 var camZoom = 1;
 var camera_child_index = 0;
 
@@ -30,12 +30,13 @@ var updateloop = function() {
             elements[i].update();
         }
 
+        camera.update();
+        renderer.render(scene, camera.camera);
+        controls.update();
+        requestAnimationFrame(updateloop);
+
     }
 
-    camera.update();
-    renderer.render(scene, camera.camera);
-    controls.update();
-    requestAnimationFrame(updateloop);
 }
 
 /*
@@ -43,10 +44,8 @@ var updateloop = function() {
 */
 function load() {
     scene = new THREE.Scene();
-    ratio = window.innerWidth/window.innerHeight;
 
     // setup renderer
-
     renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
@@ -61,6 +60,7 @@ function load() {
     // controls
     controls = new THREE.OrbitControls(camera.camera, renderer.domElement);
     controls.maxDistance = 1500;
+    controls.enablePan = false;
 
     // updates camera and scene aspect and size to match window size
     // runs when the window is resized
@@ -75,114 +75,72 @@ function load() {
         renderer.render(scene, camera.camera);
     });
 
-    // add ambient light
-    ambientlight = new THREE.AmbientLight(new THREE.Color(0.12, 0.12, 0.12));
-    // ambientlight = new THREE.AmbientLight( 0x404040 ); // soft white light
-    // ambientlight = new THREE.AmbientLight(new THREE.Color(1, 1, 1)); // soft white light
-    scene.add(ambientlight);
-
-    starfield = new Starfield();
-
-    // create elements
-    sun = new Sun('sun', 20, position=new THREE.Vector3(0, 0, 0));
-
-    elements.push(sun);
-    create_system();
-
-    // elements.push(new Planet(
-    //                 name='earth',
-    //                 radius=5,
-    //                 position=new THREE.Vector3(400, 0, 0),
-    //                 // position=new THREE.Vector3(0, 0, 0),
-    //                 rotation=new THREE.Vector3(),
-    //                 rot_speed=new THREE.Vector3(0, 0.101, 0),
-    //                 orbit_speed = 0.001,
-    //                 parent_obj=elements[0], // sun
-    //                 has_ocean=true,
-    //             ));
-
-    // elements.push(new Planet(
-    //                 name='moon',
-    //                 radius=1,
-    //                 // position=new THREE.Vector3(-40, 0, 50),
-    //                 position=new THREE.Vector3(10,0,0),
-    //                 rotation=new THREE.Vector3(),
-    //                 rot_speed=new THREE.Vector3(0, 1.2, 0),
-    //                 orbit_speed=0.01,
-    //                 parent_obj=elements[1], // earth
-    //                 has_ocean=false));
-
-    // elements.push(new Planet(
-    //                 name='mars',
-    //                 radius=3,
-    //                 position=new THREE.Vector3(250, 0, 10),
-    //                 rotation=new THREE.Vector3(0,0,0),
-    //                 rot_speed=new THREE.Vector3(0, 0.01, 0),
-    //                 orbit_speed=0.003,
-    //                 parent_obj=elements[0],
-    //                 has_ocean=false
-    //             ));
-
-    // create an array with planets only
-    // planets = [elements[1], elements[3]];
-    camera.change_child( planets[camera_child_index] );
-
+    SolarSystem.create();
 
     // start and stop elements updating using spacebar
     document.addEventListener('keydown', function(event) {
-        // console.log(event.keyCode);
-
         switch (event.keyCode) {
-            case 32:
+
+            // start/stop rendering/updating
+            case 32: // space bar
                 if (running)
                     stop();
                 else
                     run();
                 break;
 
-            case 68:
+            // wireframes on
+            case 68: // d
                 toggle_debug();
                 break;
 
             // speed up time
-            case 187:
-                increase_time();
+            case 187: // =
+                if (running)
+                    Time.increase_time();
                 break;
 
             // slow down time
-            case 189:
-                decrease_time();
+            case 189: // -
+                if (running)
+                    Time.decrease_time();
                 break;
 
             // reset time
-            case 48:
-                reset_time();
+            case 48: // 0
+                if (running)
+                    Time.reset_time();
                 break;
 
             // change camera child (left)
-            case 69:
-                change_camera_focus(0);
+            case 69: // q
+                if (running)
+                    camera.change_focus(0);
                 break;
 
             // change camera child (right)
-            case 81:
-                change_camera_focus(1);
+            case 81: // e
+                if (running)
+                    camera.change_focus(1);
                 break;
 
-            case 67:
-                camera.toggle_state();
+            // change camera mode
+            case 67: // c
+                if (running)
+                    camera.toggle_mode();
                 break;
 
-           case 87:
-                camera.ZoomAdder();
-              //  console.log("w pressed")
+            // zoom into planet
+            case 87: // w
+                if (running)
+                    camera.ZoomAdder();
                 break;
 
-           case 83:
-                camera.ZoomSubtractor();
-              //  console.log("s pressed")
-           break;
-
+            // zoom out of planet
+            case 83: // s
+                if (running)
+                    camera.ZoomSubtractor();
+                break;
 
         }
     }, false);
@@ -195,8 +153,8 @@ function load() {
 
     for (var i=0; i<planets.length; i++){
         gui.add(planets[i], 'name');
-        gui.add(planets[i], 'radius');
-        gui.add(planets[i], 'orbit_speed');
+        // gui.add(planets[i], 'radius');
+        // gui.add(planets[i], 'orbit_speed');
     }
 
 }
@@ -205,91 +163,109 @@ function load() {
    Solar System Functions
 */
 
+class SolarSystem {
 
-function clear_system() {
-    elements = [];
-    planets = [];
-}
+    static clear() {
+
+        while (scene.children.length > 0)
+            scene.remove(scene.children[0]);
+
+        elements = [];
+        planets = [];
+    }
 
 
-function create_system() {
+    static create() {
 
-    // clear_system();
+        ambientlight = new THREE.AmbientLight(new THREE.Color(0.12, 0.12, 0.12));
+        scene.add(ambientlight);
 
-    var system_size = random_number(3, 9);
-    var moon_size;
+        starfield = new Starfield();
+        sun = new Sun('sun', 20, new THREE.Vector3(0, 0, 0));
+        elements.push(sun);
 
-    var planet_count = 1;
-    var moon_count = 0;
+        var planet_count = random_number(2, 4);
 
-    // elements.push(sun);
+        for (var i=0; i<planet_count; i++) {
+            SolarSystem.add_planet();
+        }
 
-    for (var i=0; i<system_size; i++) {
+        camera.goto_planet(0);
+    }
 
-        var radius = random_number(3, 6);
 
+    static remove_planet(index) {
+        if (index < 0 || index >= planets.length)
+            return;
+
+        var p = planets[index];
+        remove_from_array(planets, p);
+        remove_from_array(elements, p);
+        p.destroy();
+
+        if (planets.length <= 0)
+            camera.change_mode("full");
+        else
+            camera.goto_planet(0);
+    }
+
+
+    static add_planet() {
         var p = new Planet(
-                    name="Planet " + planet_count,
-                    radius = radius,
-                    position = new THREE.Vector3((random_number(80, 120)*planet_count), 0, 0),
-                    rotation = new THREE.Vector3(),
-                    rot_speed = new THREE.Vector3(0, random_float(0.0001, 0.01), 0),
-                    orbit_speed = random_float(-0.01, 0.01),
-                    parent_obj = sun,
-                    has_ocean = random_boolean(),
+                    "Planet " + planets.length,
+                    random_number(3, 6),
+                    new THREE.Vector3(250+100*planets.length, random_number(0, 50), random_number(-20, 20)),
+                    new THREE.Vector3(),
+                    new THREE.Vector3(0, random_float(0.0001, 0.001), 0),
+                    random_float(0.001, 0.005),
+                    sun,
+                    true,
                 );
 
         elements.push(p);
         planets.push(p);
 
         // create moons
-        // moon_size = random_number(0, 3);
-        moon_size = 1;
-        moon_count = 1; 
-
-        for (var j=0; j<moon_size; j++) {
-
-            var m = new Planet(
-                    name="Moon " + planet_count,
-                    radius = 1,
-                    position = new THREE.Vector3(10, 0, 0),
-                    rotation = new THREE.Vector3(),
-                    rot_speed = new THREE.Vector3(0, random_float(1, 2), 0),
-                    orbit_speed = random_float(0.001, 0.05),
-                    parent_obj = p,
-                    has_ocean = false,
-                );
-
-            elements.push(m);
-            moon_count++;
-
+        var moon_count = random_number(1, 3);
+        for (var j=0; j<moon_count; j++) {
+            p.add_moon();
         }
+    }
 
-        planet_count++;
 
+    static reset() {
+        SolarSystem.clear();
+        SolarSystem.create();
     }
 
 }
 
 
-/*
-   returns a random number
-*/
+
+
+
+
+
+// returns a random number
 function random_number(min=1, max=10) {
     return Math.round(Math.random() * (max - min) + min);
 }
 
 
-/*
-   returns a random float
-*/
+// returns a random float
 function random_float(min=1, max=10) {
     return Math.random() * (max - min) + min;
 }
 
-
+// returns random bool
 function random_boolean() {
     return random_number(0, 1) == 1;
+}
+
+function remove_from_array(array, object) {
+    var index = array.indexOf(object);
+    if (index > -1)
+        array.splice(index, 1);
 }
 
 
@@ -297,65 +273,23 @@ function random_boolean() {
 /*
    Time functions
 */
-function increase_time() {
-    if (time_delta+time_change <= 50)
-        time_delta += time_change;
-}
+class Time {
 
-function decrease_time() {
-    if (time_delta-time_change >= -50)
-        time_delta -= time_change;
-}
-
-function reset_time() {
-    time_delta = 1;
-}
-
-
-
-/*
-   Camera functions
-*/
-function toggle_camera_mode() {
-
-    // toggle camera mode
-    // update starfield rotation if required
-
-}
-
-
-// direction = 1 (forward) or 0 (backward)
-function change_camera_focus(direction) {
-    if (direction == 1) {
-        camera_child_index += 1;
-        if (camera_child_index > planets.length-1)
-            camera_child_index = 0;
-
-    } else if (direction == 0) {
-        camera_child_index -= 1;
-        if (camera_child_index < 0)
-            camera_child_index = planets.length-1;
+    static increase_time() {
+        if (time_delta+time_change <= 50)
+            time_delta += time_change;
     }
 
-    camera.change_child( planets[camera_child_index] );
+    static decrease_time() {
+        if (time_delta-time_change >= -50)
+            time_delta -= time_change;
+    }
+
+    static reset_time() {
+        time_delta = 1;
+    }
+
 }
-
-
-/*
-   change to a specific planet using
-   its index.
-*/
-function go_to_planet(index) {
-    if (index < 0 || index >= planets.length)
-        return;
-
-    camera_child_index = index;
-    camera.change_state("orbit");
-    camera.change_child( planets[camera_child_index] );
-}
-
-
-
 
 
 
@@ -372,6 +306,7 @@ function start() {
 
 function run() {
     running = true;
+    requestAnimationFrame(updateloop);
 }
 
 function stop() {
@@ -392,3 +327,7 @@ function toggle_debug() {
         elements[i].wireframe(debug);
 
 }
+
+
+
+

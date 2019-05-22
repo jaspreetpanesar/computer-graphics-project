@@ -5,9 +5,6 @@ class Planet {
     static segments = 32;
     static color = new THREE.Color(0.5, 0.3, 0.1);
 
-    // TODO for rot_speed get vertex instead so that it can rotate at multiple speeds and angles
-    // same for orbit_speed
-
     constructor(name='planet', radius=5, position=new THREE.Vector3(), rotation=new THREE.Vector3(), rot_speed=new THREE.Vector3(), orbit_speed=0, parent_obj=null, has_ocean=false) {
         this.name = name;
         this.radius = radius;
@@ -15,8 +12,6 @@ class Planet {
         this.rot_speed = rot_speed;
         this.orbit_speed = orbit_speed;
         this.parent_obj = parent_obj;
-
-
 
         this.geometry = new THREE.IcosahedronGeometry(radius, 5);
         this.material = new THREE.ShaderMaterial( {
@@ -51,8 +46,7 @@ class Planet {
 
         // create ocean level if required
         if (has_ocean) {
-            this.ocean = new Ocean(this, radius);
-            this.planet.add(this.ocean.model);
+            this.add_ocean();
         } else {
             this.ocean = null;
         }
@@ -137,6 +131,54 @@ class Planet {
     }
 
 
+    add_ocean() {
+        if (this.has_ocean)
+            return;
+
+        this.ocean = new Ocean(this, this.radius);
+        this.planet.add(this.ocean.model);
+        this.has_ocean = true;
+    }
+
+
+    remove_ocean() {
+        if (!this.has_ocean)
+            return;
+
+        this.planet.remove(this.ocean.model);
+        scene.remove(this.ocean.model);
+        this.ocean = null;
+        this.has_ocean = false;
+    }
+
+
+    add_moon(name="Moon") {
+        var m = new Planet(
+                name,
+                random_number(0.5, 1.5),
+                new THREE.Vector3(15, 0, 0),
+                new THREE.Vector3(),
+                new THREE.Vector3(0, random_float(0.0001, 0.0005), 0),
+                random_float(0.001, 0.015),
+                this,
+                false,
+                );
+
+        elements.push(m);
+        this.moons.push(m);
+    }
+
+
+    remove_moon(index) {
+        if (index < 0 || index >= this.moons.length)
+            return;
+
+        var m = this.moons[index];
+        remove_from_array(this.moons, m);
+        m.destroy();
+    }
+
+
     update() {
         if (this.parent_obj)
             this.orbit();
@@ -152,6 +194,17 @@ class Planet {
         this.material.wireframe = show;
         if (this.ocean)
             this.ocean.wireframe(show);
+    }
+
+
+    destroy() {
+        for (var i=0; i<this.moons.length; i++)
+            this.moons[i].destroy();
+
+        if (this.parent_obj)
+            scene.remove(this.orbitGroup);
+
+        scene.remove(this.planet);
     }
 
 }

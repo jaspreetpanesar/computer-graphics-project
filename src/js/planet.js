@@ -22,8 +22,8 @@ class Planet {
         this.material = new THREE.ShaderMaterial( {
 
             uniforms: {
-                time: {type: "f", value: 0},
-                weight: {type: "f", value: 0.05*this.radius}
+                time: {type: "f", value: random_number(0, 50)},
+                weight: {type: "f", value: 0.08*this.radius}
             },
             vertexShader: document.getElementById('vertexShader').textContent,
             fragmentShader: document.getElementById('fragmentShader').textContent,

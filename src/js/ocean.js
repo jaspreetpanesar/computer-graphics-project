@@ -3,9 +3,9 @@ class Ocean {
 
     static color = new THREE.Color(0, 0.6, 1); // ocean color
     static segments = 64;
-    static updatemodifier = 0.0001; // rate of ocean level chance
-    static sealevel = 0.1; // starting position of ocean is radius + sealevel
-    static maximum = 1.05; // largest ocean will be raised during high tide
+    static updatemodifier = 0.00001; // rate of ocean level chance
+    static sealevel = -0.01; // starting position of ocean is radius + sealevel
+    static maximum = 1.005; // largest ocean will be raised during high tide
 
     tide = 'lowering'; // defines weather tide is currently raising or lowering
 

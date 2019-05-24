@@ -152,9 +152,17 @@ function load() {
     });
 
     for (var i=0; i<planets.length; i++){
-        gui.add(planets[i], 'name');
-        // gui.add(planets[i], 'radius');
-        // gui.add(planets[i], 'orbit_speed');
+        gui.add(planets[i], 'name').name("Name");
+        gui.add(planets[i], 'orbit_speed').name("Orbit Speed");
+        gui.add(planets[i].rot_speed, 'y').name("Rotation Speed");
+        gui.add(planets[i].moons, 'length').name("Number of Moons").listen();
+
+        gui.add(planets[i], 'scale', 0.5, 2).name("Scale Value");
+        gui.add(planets[i], 'update_scale').name("Update Scale");
+
+        gui.add(planets[i], 'add_moon').name("Add Moon");
+        gui.add(planets[i], 'remove_moon').name("Remove Moon");
+        gui.add(planets[i], 'regenerate_terrain').name("Regenerate Terrain");
     }
 
 }

@@ -12,6 +12,7 @@ class Planet {
         this.rot_speed = rot_speed;
         this.orbit_speed = orbit_speed;
         this.parent_obj = parent_obj;
+        this.scale = 1;
 
         this.geometry = new THREE.IcosahedronGeometry(radius, 5);
         this.material = new THREE.ShaderMaterial( {
@@ -75,6 +76,13 @@ class Planet {
             this.parent_obj.model.add(this.orbitGroup);
             console.log(this.parent_obj.model.children);
         }
+    }
+
+
+    update_scale() {
+        this.planet.scale.x = this.scale;
+        this.planet.scale.y = this.scale;
+        this.planet.scale.z = this.scale;
     }
 
 
@@ -170,13 +178,18 @@ class Planet {
     }
 
 
-    remove_moon(index) {
+    remove_moon(index=0) {
         if (index < 0 || index >= this.moons.length)
             return;
 
         var m = this.moons[index];
         remove_from_array(this.moons, m);
         m.destroy();
+    }
+
+
+    regenerate_terrain() {
+        console.log("regenerating terrain");
     }
 
 

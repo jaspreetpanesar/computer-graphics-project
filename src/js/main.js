@@ -216,10 +216,11 @@ class SolarSystem {
                     random_number(3, 6),
                     new THREE.Vector3(250+100*planets.length, random_number(0, 50), random_number(-20, 20)),
                     new THREE.Vector3(),
-                    new THREE.Vector3(0, random_float(0.0001, 0.001), 0),
+                    new THREE.Vector3(0, random_float(0.0001, 0.0008), 0),
                     random_float(0.001, 0.005),
                     sun,
-                    true,
+                    random_boolean(),
+                    true
                 );
 
         elements.push(p);

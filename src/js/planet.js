@@ -5,7 +5,7 @@ class Planet {
     static segments = 32;
     static color = new THREE.Color(0.5, 0.3, 0.1);
 
-    constructor(name='planet', radius=5, position=new THREE.Vector3(), rotation=new THREE.Vector3(), rot_speed=new THREE.Vector3(), orbit_speed=0, parent_obj=null, has_ocean=false) {
+    constructor(name='planet', radius=5, position=new THREE.Vector3(), rotation=new THREE.Vector3(), rot_speed=new THREE.Vector3(), orbit_speed=0, parent_obj=null, has_ocean=false, is_moon=false) {
         this.name = name;
         this.radius = radius;
         this.position = position;
@@ -155,13 +155,14 @@ class Planet {
     add_moon(name="Moon") {
         var m = new Planet(
                 name,
-                random_number(0.5, 1.5),
-                new THREE.Vector3(15, 0, 0),
+                random_number(0.2, 1.5),
+                new THREE.Vector3(15+5*this.moons.length, random_number(-5, 5), random_number(-5, 5)),
                 new THREE.Vector3(),
                 new THREE.Vector3(0, random_float(0.0001, 0.0005), 0),
                 random_float(0.001, 0.015),
                 this,
                 false,
+                true
                 );
 
         elements.push(m);

@@ -148,17 +148,6 @@ function load() {
         }
     }, false);
 
-    var CameraGui = function(){
-      this.goto = function(index){
-        camera.goto_planet(index);
-      };
-      this.focus = function(direction){
-        camera.change_focus(direction);
-      };
-    };
-
-    var cameraGui = new CameraGui();
-
 }
 
 /*
@@ -197,6 +186,17 @@ class SolarSystem {
             height: 5 * 32 - 1
         });
 
+        var CameraGui = function(){
+          this.goto = function(index){
+            camera.goto_planet(index);
+          };
+          this.focus = function(direction){
+            camera.change_focus(direction);
+          };
+        };
+
+        var cameraGui = new CameraGui();
+
         for (var i=0; i<planets.length; i++){
 
             var num = i + 1; //correct planet number
@@ -222,6 +222,8 @@ class SolarSystem {
 
         var navigationDropDown = gui.addFolder("Navigation"); //creates dropdown box for navigation
         navigationDropDown.add(camera, 'toggle_mode').name("Toggle Camera");
+        navigationDropDown.add({focus : cameraGui.focus.bind(this, 1)}, 'focus').name("Next Planet");
+        navigationDropDown.add({focus : cameraGui.focus.bind(this, 0)}, 'focus').name("Previous Planet");
         navigationDropDown.open();
 
         gui.add(SolarSystem, 'add_planet').name("Add Planet");
@@ -292,6 +294,17 @@ function planet_camera() {
         height: 5 * 32 - 1
     });
 
+    var CameraGui = function(){
+      this.goto = function(index){
+        camera.goto_planet(index);
+      };
+      this.focus = function(direction){
+        camera.change_focus(direction);
+      };
+    };
+
+    var cameraGui = new CameraGui();
+
     var num = camera.child_index + 1; //correct planet number
     num = num.toString();
     var planetDropdown = gui.addFolder("Planet " + num); //creates dropdown box for each planet
@@ -313,6 +326,8 @@ function planet_camera() {
 
     var navigationDropDown = gui.addFolder("Navigation"); //creates dropdown box for navigation
     navigationDropDown.add(camera, 'toggle_mode').name("Toggle Camera");
+    navigationDropDown.add({focus : cameraGui.focus.bind(this, 1)}, 'focus').name("Next Planet");
+    navigationDropDown.add({focus : cameraGui.focus.bind(this, 0)}, 'focus').name("Previous Planet");
     navigationDropDown.open();
 
     gui.add(SolarSystem, 'add_planet').name("Add Planet");
@@ -326,6 +341,17 @@ function top_down_camera(){
   gui = new dat.GUI({
       height: 5 * 32 - 1
   });
+
+  var CameraGui = function(){
+    this.goto = function(index){
+      camera.goto_planet(index);
+    };
+    this.focus = function(direction){
+      camera.change_focus(direction);
+    };
+  };
+
+  var cameraGui = new CameraGui();
 
   for (var i=0; i<planets.length; i++){
 
@@ -352,6 +378,8 @@ function top_down_camera(){
 
   var navigationDropDown = gui.addFolder("Navigation"); //creates dropdown box for navigation
   navigationDropDown.add(camera, 'toggle_mode').name("Toggle Camera");
+  navigationDropDown.add({focus : cameraGui.focus.bind(this, 1)}, 'focus').name("Next Planet");
+  navigationDropDown.add({focus : cameraGui.focus.bind(this, 0)}, 'focus').name("Previous Planet");
   navigationDropDown.open();
 
   gui.add(SolarSystem, 'add_planet').name("Add Planet");

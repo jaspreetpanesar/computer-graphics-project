@@ -29,19 +29,22 @@ class CustomCamera {
             this.camera.position.set(0, 1000, 0);
             this.camera.lookAt(0, 0, 0);
             this.mode = "full";
-        } 
+            top_down_camera();
+        }
     }
 
 
     toggle_mode() {
         if (this.mode == "orbit") {
             this.change_mode("full");
+            top_down_camera();
         }
         else {
             if (planets.length > 0) {
                 this.child_index = 0;
                 this.change_mode("orbit");
                 this.goto_planet(0);
+                planet_camera();
             }
         }
     }
@@ -59,7 +62,7 @@ class CustomCamera {
             this.child_index += 1;
             if (this.child_index > planets.length-1)
                 this.child_index = 0;
-        } 
+        }
         else if (direction == 0) {
             this.child_index -= 1;
             if (this.child_index < 0)
@@ -67,6 +70,7 @@ class CustomCamera {
         }
 
         this.change_child(planets[this.child_index]);
+        planet_camera();
     }
 
 
@@ -113,7 +117,7 @@ class CustomCamera {
                     this.child.get_world_position('z')
                 );
             }
-        } 
+        }
     }
 
 

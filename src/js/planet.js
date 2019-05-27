@@ -56,7 +56,7 @@ class Planet {
             this.orbitGroup = new THREE.Group();
             this.orbitGroup.add(this.planet);
             this.parent_obj.model.add(this.orbitGroup);
-            
+
 
             scene.add(this.orbitGroup);
         }
@@ -177,7 +177,6 @@ class Planet {
         this.moons.push(m);
     }
 
-
     remove_moon(index=0) {
         if (index < 0 || index >= this.moons.length)
             return;
@@ -222,5 +221,3 @@ class Planet {
     }
 
 }
-
-

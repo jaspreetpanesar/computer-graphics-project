@@ -151,18 +151,42 @@ function load() {
         height: 5 * 32 - 1
     });
 
+    var camFolder = gui.addFolder('Camera Controls');
+    var planetFolder = gui.addFolder('Planet Controls');
+
+    var CameraGui = function(){
+      this.goto = function(index){
+        camera.goto_planet(index);
+      };
+      this.focus = function(direction){
+        camera.change_focus(direction);
+      };
+    };
+
+    var cameraGui = new CameraGui();
+
+    camFolder.add(camera, 'toggle_mode').name("Toggle Overview c");
+    camFolder.add({focus : cameraGui.focus.bind(this, 1)}, 'focus').name("Next Planet e");
+    camFolder.add({focus : cameraGui.focus.bind(this, 0)}, 'focus').name("Previous Planet q");
+
+    for (var i=0; i<planets.length; i++) {
+      camFolder.add({goto : cameraGui.goto.bind(this, i)}, 'goto').name("Go to " + planets[i].name);
+    }
+
+
+
     for (var i=0; i<planets.length; i++){
-        gui.add(planets[i], 'name').name("Name");
-        gui.add(planets[i], 'orbit_speed').name("Orbit Speed");
-        gui.add(planets[i].rot_speed, 'y').name("Rotation Speed");
-        gui.add(planets[i].moons, 'length').name("Number of Moons").listen();
+        planetFolder.add(planets[i], 'name').name("Name");
+        planetFolder.add(planets[i], 'orbit_speed').name("Orbit Speed");
+        planetFolder.add(planets[i].rot_speed, 'y').name("Rotation Speed");
+        planetFolder.add(planets[i].moons, 'length').name("Number of Moons").listen();
 
-        gui.add(planets[i], 'scale', 0.5, 2).name("Scale Value");
-        gui.add(planets[i], 'update_scale').name("Update Scale");
+        planetFolder.add(planets[i], 'scale', 0.5, 2).name("Scale Value");
+        planetFolder.add(planets[i], 'update_scale').name("Update Scale");
 
-        gui.add(planets[i], 'add_moon').name("Add Moon");
-        gui.add(planets[i], 'remove_moon').name("Remove Moon");
-        gui.add(planets[i], 'regenerate_terrain').name("Regenerate Terrain");
+        planetFolder.add(planets[i], 'add_moon').name("Add Moon");
+        planetFolder.add(planets[i], 'remove_moon').name("Remove Moon");
+        planetFolder.add(planets[i], 'regenerate_terrain').name("Regenerate Terrain");
     }
 
 }
@@ -336,7 +360,3 @@ function toggle_debug() {
         elements[i].wireframe(debug);
 
 }
-
-
-
-

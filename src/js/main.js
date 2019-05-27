@@ -215,6 +215,7 @@ class SolarSystem {
             planetDropdown.add(planets[i], 'add_moon').name("Add Moon");
             planetDropdown.add(planets[i], 'remove_moon').name("Remove Moon");
             planetDropdown.add(planets[i], 'regenerate_terrain').name("Regenerate Terrain");
+            //planetDropdown.add(camera, 'got')
             //planetDropdown.add(SolarSystem, 'remove_planet').name("Remove Planet");
             planetDropdown.close(); //dropdown box starts open
 
@@ -229,8 +230,7 @@ class SolarSystem {
         gui.add(SolarSystem, 'add_planet').name("Add Planet");
         gui.add(SolarSystem, 'reset').name("New Solar System"); //button to create a new solar system
 
-
-        camera.goto_planet(0);
+        camera.change_mode("full");
     }
 
 
@@ -279,10 +279,6 @@ class SolarSystem {
         gui.destroy(); //destroys exisiting gui
         SolarSystem.create();
     }
-
-}
-
-function top_down_camera() {
 
 }
 

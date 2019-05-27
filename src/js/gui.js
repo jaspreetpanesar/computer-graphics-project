@@ -29,19 +29,19 @@ class CustomGUI{
         //create new gui
     }
 
-    next_planet() { //done
+    //next_planet() { //done
         //get index
         //increment index
         //change camera to planet at the index
         //planet_camera()
-    }
+    //}
 
-    previous_planet() { //done
+    //previous_planet() { //done
         //get index
         //decrement index
         //change camera to planet at the index
         //planet_camera()
-    }
+    //}
 
     select_planet() {
         //make planet name a button

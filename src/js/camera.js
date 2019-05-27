@@ -10,12 +10,12 @@ class CustomCamera {
 
     zoom = CustomCamera.zoom_default;
     child_index = 0;
-    mode = "orbit" // orbit or full
+    mode = "full"; // orbit or full
 
 
     constructor(child=null) {
         this.camera = new THREE.PerspectiveCamera(CustomCamera.fov, CustomCamera.ratio, CustomCamera.near, CustomCamera.far);
-        this.camera.position.set(0, 0, 200);
+        this.camera.position.set(0, 1000, 0);
         this.child = child;
 
         if (this.child)

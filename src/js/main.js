@@ -148,6 +148,17 @@ function load() {
         }
     }, false);
 
+    var CameraGui = function(){
+      this.goto = function(index){
+        camera.goto_planet(index);
+      };
+      this.focus = function(direction){
+        camera.change_focus(direction);
+      };
+    };
+
+    var cameraGui = new CameraGui();
+
 }
 
 /*

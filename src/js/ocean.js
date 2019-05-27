@@ -7,10 +7,19 @@ class Ocean {
     static maximum = 1.005; // largest ocean will be raised during high tide
 
     static color_list = [
-        [0, 0.6, 1], // blue
-        [0.8, 0.4, 0], // orange
-        [0.8, 0, 0], // red
-        [0, 0.7, 0.2], // green
+        "#b3f0ff",
+        "#00ccff",
+        "#33d6ff",
+        "#4ddbff",
+        "#66e0ff",
+        "#00b8e6",
+        "#adebeb",
+        "#99e6e6",
+        "#33cccc",
+        "#5cd6d6",
+        "#0099ff",
+        "#4db8ff",
+        "#008ae6"
     ];
 
     tide = 'lowering'; // defines weather tide is currently raising or lowering
@@ -22,7 +31,7 @@ class Ocean {
         this.color = Ocean.random_color();
 
         // generate fields
-        this.geometry = new THREE.SphereGeometry(this.radius, Ocean.segments, Ocean.segments);
+        this.geometry = new THREE.IcosahedronGeometry(this.radius, 5);
         this.material = new THREE.MeshPhongMaterial();
         this.material.color = this.color;
         this.material.wireframe = debug;
@@ -34,8 +43,7 @@ class Ocean {
 
     static random_color() {
         var index = random_number(0, Ocean.color_list.length-1);
-        var color = Ocean.color_list[index];
-        return new THREE.Color(color[0], color[1], color[2]);
+        return new THREE.Color(Ocean.color_list[index]);
     }
 
 

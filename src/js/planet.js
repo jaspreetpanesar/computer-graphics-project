@@ -3,7 +3,33 @@
 class Planet {
 
     static segments = 32;
-    static color = new THREE.Color(0.5, 0.3, 0.1);
+
+    static planet_color_list = [
+        "#b3f0ff",
+        "#00ccff",
+        "#33d6ff",
+        "#4ddbff",
+        "#66e0ff",
+        "#00b8e6",
+        "#adebeb",
+        "#99e6e6",
+        "#33cccc",
+        "#5cd6d6",
+        "#0099ff",
+        "#4db8ff",
+        "#008ae6"
+    ];
+
+    static moon_color_list = [
+        "#cccccc",
+        "#b3b3b3",
+        "#808080",
+        "#e6e6e6",
+        "#bfbfbf",
+        "#804000",
+        "#663300",
+        "#ac7339"
+    ]
 
     constructor(name='planet', radius=5, position=new THREE.Vector3(), rotation=new THREE.Vector3(), rot_speed=new THREE.Vector3(), orbit_speed=0, parent_obj=null, has_ocean=false, is_moon=false) {
         this.name = name;
@@ -13,13 +39,16 @@ class Planet {
         this.orbit_speed = orbit_speed;
         this.parent_obj = parent_obj;
         this.scale = 1;
+        this.color = Planet.random_color(is_moon);
+        this.is_moon = is_moon;
 
         this.geometry = new THREE.IcosahedronGeometry(radius, 5);
         this.material = new THREE.ShaderMaterial( {
 
             uniforms: {
                 time: {type: "f", value: random_number(0, 50)},
-                weight: {type: "f", value: 0.08*this.radius}
+                weight: {type: "f", value: random_float(0, 0.08*this.radius)},
+                diffuse: {type: "c", value: this.color}
             },
             vertexShader: document.getElementById('vertexShader').textContent,
             fragmentShader: document.getElementById('fragmentShader').textContent,
@@ -62,6 +91,16 @@ class Planet {
         }
 
 
+    }
+
+    static random_color(is_moon) {
+        if (is_moon)
+            var color_list = Planet.moon_color_list;
+        else
+            var color_list = Planet.planet_color_list;
+
+        var index = random_number(0, color_list.length-1);
+        return new THREE.Color(color_list[index]);
     }
 
 

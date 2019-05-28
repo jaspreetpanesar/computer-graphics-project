@@ -13,7 +13,6 @@ var exists = false;
 //var time_delta = 1;
 var time_change = 0.5;
 var camZoom = 1;
-var camera_child_index = 0;
 
 var sun, starfield;
 
@@ -64,6 +63,7 @@ function load() {
     // controls
     controls = new THREE.OrbitControls(camera.camera, renderer.domElement);
     controls.maxDistance = 1500;
+    controls.minDistance = 750;
     controls.enablePan = false;
 
     // updates camera and scene aspect and size to match window size
@@ -119,14 +119,14 @@ function load() {
             // change camera child (left)
             case 69: // q
                 if (running)
-                    camera_child_index = camera.change_focus(1); //returns the current planet
+                    camera.change_focus(1); //returns the current planet
                     //planet_gui(camera_child_index);
                 break;
 
             // change camera child (right)
             case 81: // e
                 if (running)
-                    camera_child_index = camera.change_focus(0); //returns the current planet
+                    camera.change_focus(0); //returns the current planet
                     //planet_gui(camera_child_index);
                 break;
 
@@ -178,7 +178,7 @@ class SolarSystem {
         sun = new Sun('sun', 20, new THREE.Vector3(0, 0, 0));
         elements.push(sun);
 
-        var planet_count = random_number(2, 4);
+        var planet_count = random_number(3, 6);
 
         for (var i=0; i<planet_count; i++) {
             SolarSystem.add_planet();
@@ -242,33 +242,36 @@ class SolarSystem {
     }
 
 
-    static remove_planet(index) {
-        if (index < 0 || index >= planets.length)
-            return;
+    static remove_planet() {
+        if (camera.mode == "full")
+            var index = planets.length-1;
+        else
+            var index = camera.child_index;
 
+        console.log(planets[index]);
         var p = planets[index];
         remove_from_array(planets, p);
         remove_from_array(elements, p);
         p.destroy();
-
-        if (planets.length <= 0)
-            camera.change_mode("full");
-        else
-            camera.goto_planet(0);
     }
 
 
     static add_planet() {
+
+        if (planets.length >= 7)
+            return;
+
+
         var p = new Planet(
-                    "Planet " + (planets.length + 1), //correct planet number
-                    random_number(3, 6),
-                    new THREE.Vector3(250+100*planets.length, random_number(0, 50), random_number(-20, 20)),
-                    new THREE.Vector3(),
-                    new THREE.Vector3(0, random_float(0.0001, 0.0008), 0),
-                    random_float(0.001, 0.005),
-                    sun,
-                    random_boolean(),
-                    true
+            name_planet(), // name
+            random_float(Planet.planet_constants.radius.min, Planet.planet_constants.radius.max), // radius
+            new THREE.Vector3(250+100*planets.length, random_number(0, 50), random_number(-20, 20)), // position
+            new THREE.Vector3(), // rotation
+            new THREE.Vector3(0, random_float(Planet.planet_constants.rotation_speed.y.min, Planet.planet_constants.rotation_speed.y.max), 0), // rotation speed
+            random_float(Planet.planet_constants.orbit_speed.min, Planet.planet_constants.orbit_speed.max), // orbit_speed
+            sun, // parent_obj
+            random_boolean(), // has_ocean
+            false // is_moon
                 );
 
         elements.push(p);
@@ -328,7 +331,6 @@ function planet_camera() {
     planetDropdown.add(planets[camera.child_index], 'add_moon').name("Add Moon");
     planetDropdown.add(planets[camera.child_index], 'remove_moon').name("Remove Moon");
     planetDropdown.add(planets[camera.child_index], 'regenerate_terrain').name("Regenerate Terrain");
-    //planetDropdown.add(SolarSystem, 'remove_planet').name("Remove Planet");
     planetDropdown.open(); //dropdown box starts open
 
     var navigationDropDown = gui.addFolder("Navigation"); //creates dropdown box for navigation
@@ -340,6 +342,7 @@ function planet_camera() {
     gui.add(time, 'time_delta', -5, 5).name("Time").listen();
     gui.add(Time, 'reset_time').name("Reset Time");
     gui.add(SolarSystem, 'add_planet').name("Add Planet");
+    gui.add(SolarSystem, 'remove_planet').name("Remove Planet");
     gui.add(SolarSystem, 'reset').name("New Solar System"); //button to create a new solar system
 }
 
@@ -383,7 +386,6 @@ function top_down_camera(){
       planetDropdown.add(planets[i], 'add_moon').name("Add Moon");
       planetDropdown.add(planets[i], 'remove_moon').name("Remove Moon");
       planetDropdown.add(planets[i], 'regenerate_terrain').name("Regenerate Terrain");
-      //planetDropdown.add(SolarSystem, 'remove_planet').name("Remove Planet");
       planetDropdown.close(); //dropdown box starts open
 
   }
@@ -397,9 +399,39 @@ function top_down_camera(){
   gui.add(time, 'time_delta', -5, 5).name("Time").listen();
   gui.add(Time, 'reset_time').name("Reset Time");
   gui.add(SolarSystem, 'add_planet').name("Add Planet");
+  gui.add(SolarSystem, 'remove_planet').name("Remove Planet");
   gui.add(SolarSystem, 'reset').name("New Solar System"); //button to create a new solar system
 
 }
+
+
+function name_planet() {
+    name_list = [
+        "Aegir", "Amateru", "Arion", "Arkas", "Brahe", "Dagon", "Dimidium", "Draugr", 
+        "Dulcinea", "Fortitudo", "Galileo", "Harriot", "Hypatia", "Janssen", "Lipperhey", 
+        "Majriti", "Meztli", "Orbitar", "Phobetor", "Poltergeist", "Quijote", "Rocinante", 
+        "Saffar", "Samh", "Smertrios", "Sancho", "Spe", "Tadmor", "Taphao", "Kaew", "Taphao", 
+        "Thong", "Thestias", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Pluto", 
+        "Mercury", "Neptune", "Alpha", "Beta", "Centuri"
+        ];
+    roman_numerals = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
+
+    var copy = true;
+    var name;
+
+    // loop used to re-generate name in case there are duplicates
+    while (copy) {
+        name = name_list[random_number(0, name_list.length)] + " " + roman_numerals[random_number(0, roman_numerals.length-1)];
+        copy = false;
+        for (var i=0; i<planets.length; i++) {
+            if (planets[i].name == name)
+                copy = true;
+        }
+    }
+
+    return name;
+}
+
 
 // returns a random number
 function random_number(min=1, max=10) {

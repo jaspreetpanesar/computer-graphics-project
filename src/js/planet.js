@@ -5,31 +5,38 @@ class Planet {
     static segments = 32;
 
     static planet_color_list = [
-        "#b3f0ff",
-        "#00ccff",
-        "#33d6ff",
-        "#4ddbff",
-        "#66e0ff",
-        "#00b8e6",
-        "#adebeb",
-        "#99e6e6",
-        "#33cccc",
-        "#5cd6d6",
-        "#0099ff",
-        "#4db8ff",
-        "#008ae6"
+        [102, 51, 0],
+        [51, 102, 0],
+        [0, 51, 0],
+        [1, 0, 0],
     ];
 
     static moon_color_list = [
-        "#cccccc",
-        "#b3b3b3",
-        "#808080",
-        "#e6e6e6",
-        "#bfbfbf",
-        "#804000",
-        "#663300",
-        "#ac7339"
+        [255, 255, 255],
+        [153, 153, 102],
+        [61, 61, 41],
+        [21, 21, 30],
     ]
+
+    static planet_constants = {
+        'radius': {'min': 3, 'max': 6},
+        'rotation_speed': {
+            'x': {'min': 0, 'max': 0},
+            'y': {'min': 0.0001, 'max': 0.0008},
+            'z': {'min': 0, 'max': 0}
+        },
+        'orbit_speed': {'min': 0.001, 'max': 0.005}
+    }
+
+    static moon_constants = {
+        'radius': {'min': 0.2, 'max': 1.5},
+        'rotation_speed': {
+            'x': {'min': 0, 'max': 0},
+            'y': {'min': 0.0001, 'max': 0.0005},
+            'z': {'min': 0, 'max': 0}
+        },
+        'orbit_speed': {'min': 0.001, 'max': 0.015}
+    }
 
     constructor(name='planet', radius=5, position=new THREE.Vector3(), rotation=new THREE.Vector3(), rot_speed=new THREE.Vector3(), orbit_speed=0, parent_obj=null, has_ocean=false, is_moon=false) {
         this.name = name;
@@ -39,20 +46,34 @@ class Planet {
         this.orbit_speed = orbit_speed;
         this.parent_obj = parent_obj;
         this.scale = 1;
+        //this.color = hexToRGB(Planet.planet_color_list[random_number(0, Planet.planet_color_list.length-1)]);
         this.color = Planet.random_color(is_moon);
         this.is_moon = is_moon;
 
         this.geometry = new THREE.IcosahedronGeometry(radius, 5);
-        this.material = new THREE.ShaderMaterial( {
 
-            uniforms: {
-                time: {type: "f", value: random_number(0, 50)},
-                weight: {type: "f", value: random_float(0, 0.08*this.radius)},
-                diffuse: {type: "c", value: this.color}
-            },
-            vertexShader: document.getElementById('vertexShader').textContent,
-            fragmentShader: document.getElementById('fragmentShader').textContent,
-        });
+        if (!this.is_moon)
+            this.material = new THREE.ShaderMaterial( {
+                uniforms: {
+                    time: {type: "f", value: random_float(1, 10)},
+                    weight: {type: "f", value: random_float(0.04*this.radius, 0.10*this.radius)},
+                    vcolor: {value: this.color},
+                    sunlight: {value: [0, 0, 0]}
+                },
+                vertexShader: document.getElementById('vertexShader').textContent,
+                fragmentShader: document.getElementById('fragmentShader').textContent,
+            });
+        else
+            this.material = new THREE.ShaderMaterial( {
+                uniforms: {
+                    time: {type: "f", value: random_float(1, 10)},
+                    weight: {type: "f", value: random_float(0.1*this.radius, 0.2*this.radius)},
+                    vcolor: {value: this.color},
+                    sunlight: {value: [0, 0, 0]}
+                },
+                vertexShader: document.getElementById('vertexShader').textContent,
+                fragmentShader: document.getElementById('fragmentShader').textContent,
+            });
 
         // generated fields
         // this.geometry = new THREE.SphereGeometry(radius, Planet.segments, Planet.segments);
@@ -93,14 +114,22 @@ class Planet {
 
     }
 
+
     static random_color(is_moon) {
         if (is_moon)
             var color_list = Planet.moon_color_list;
         else
             var color_list = Planet.planet_color_list;
+        var color = color_list[random_number(0, color_list.length-1)]
+        return [color[0]/255, color[1]/255, color[2]/255];
+    }
 
-        var index = random_number(0, color_list.length-1);
-        return new THREE.Color(color_list[index]);
+
+    sun_direction() {
+        var dir = new THREE.Vector3();
+        var sunvec = new THREE.Vector3(sun.get_world_position('x'), sun.get_world_position('y'), sun.get_world_position('z'));
+        var myvec = new THREE.Vector3(this.get_world_position('x'), this.get_world_position('y'), this.get_world_position('z'));
+        return dir.subVectors(myvec, sunvec).normalize();
     }
 
 
@@ -134,7 +163,6 @@ class Planet {
 
 
     // rotate in place (using Group object)
-    // TODO rotate by an angle instead of value, as objects that are further away from the center position rotate much faster than those near the center.
     rotate() {
         this.planet.rotation.x += (this.rot_speed.x * time.time_delta);
         this.planet.rotation.y += (this.rot_speed.y * time.time_delta);
@@ -200,16 +228,19 @@ class Planet {
 
 
     add_moon(name="Moon") {
+        if (this.moons.length > 5)
+            return;
+
         var m = new Planet(
                 name,
-                random_number(0.2, 1.5),
-                new THREE.Vector3(15+5*this.moons.length, random_number(-5, 5), random_number(-5, 5)),
-                new THREE.Vector3(),
-                new THREE.Vector3(0, random_float(0.0001, 0.0005), 0),
-                random_float(0.001, 0.015),
-                this,
-                false,
-                true
+                random_number(0.2, 1.5), // radius
+                new THREE.Vector3(10+20*this.moons.length, random_number(-5, 5), random_number(-5, 5)), //position
+                new THREE.Vector3(), // rotation
+                new THREE.Vector3(0, random_float(Planet.moon_constants.rotation_speed.y.min, Planet.moon_constants.rotation_speed.y.max), 0), // rot_speed
+                random_float(Planet.moon_constants.orbit_speed.min, Planet.moon_constants.orbit_speed.max), // orbit_speed
+                this, // parent
+                false, // ocean
+                true // is moon
                 );
 
         elements.push(m);
@@ -227,11 +258,13 @@ class Planet {
 
 
     regenerate_terrain() {
-        console.log("regenerating terrain");
+        this.model.material.uniforms.time.value = random_float(1, 10);
     }
 
 
     update() {
+        this.model.material.uniforms.sunlight.value = this.sun_direction();
+
         if (this.parent_obj)
             this.orbit();
 

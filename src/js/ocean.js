@@ -48,7 +48,7 @@ class Ocean {
 
 
     lower_tide() {
-        var scale = this.scale - (this.scale * (Ocean.updatemodifier * time_delta));
+        var scale = this.scale - (this.scale * (Ocean.updatemodifier * time.time_delta));
         if (scale > Ocean.maximum || scale <= 1)
             return false;
         this.model.scale.x = scale;
@@ -59,7 +59,7 @@ class Ocean {
     }
 
     raise_tide() {
-        var scale = this.scale + (this.scale * (Ocean.updatemodifier * time_delta));
+        var scale = this.scale + (this.scale * (Ocean.updatemodifier * time.time_delta));
         if (scale > Ocean.maximum || scale <= 1)
             return false;
         this.model.scale.x = scale;
@@ -84,5 +84,3 @@ class Ocean {
     }
 
 }
-
-

@@ -87,9 +87,9 @@ class Sun {
 
     update() {
         // rotates very slowly to imitate animating texture
-        this.model.rotation.x += 0.0002 * time_delta;
-        this.model.rotation.y += 0.0002 * time_delta;
-        this.model.rotation.z += 0.0002 * time_delta;
+        this.model.rotation.x += 0.0002 * time.time_delta;
+        this.model.rotation.y += 0.0002 * time.time_delta;
+        this.model.rotation.z += 0.0002 * time.time_delta;
     }
 
 
@@ -100,6 +100,3 @@ class Sun {
 
 
 }
-
-
-

@@ -10,13 +10,14 @@ var running = false;
 var debug = false;
 var exists = false;
 
-var time_delta = 1;
-var time_change = 0.01;
+//var time_delta = 1;
+var time_change = 0.5;
 var camZoom = 1;
 var camera_child_index = 0;
 
 var sun, starfield;
 
+var time;
 
 // runs function every frame to render scene changes on screen
 var updateloop = function() {
@@ -57,6 +58,8 @@ function load() {
 
     // default camera (perspective)
     camera = new CustomCamera();
+
+    time = new Time();
 
     // controls
     controls = new THREE.OrbitControls(camera.camera, renderer.domElement);
@@ -212,6 +215,9 @@ class SolarSystem {
             planetDropdown.add(planets[i], 'scale', 0.5, 2).name("Scale Value");
             planetDropdown.add(planets[i], 'update_scale').name("Update Scale");
 
+            planetDropdown.add(planets[i], 'add_ocean').name("Add Ocean");
+            planetDropdown.add(planets[i], 'remove_ocean').name("Remove Ocean");
+
             planetDropdown.add(planets[i], 'add_moon').name("Add Moon");
             planetDropdown.add(planets[i], 'remove_moon').name("Remove Moon");
             planetDropdown.add(planets[i], 'regenerate_terrain').name("Regenerate Terrain");
@@ -227,6 +233,8 @@ class SolarSystem {
         navigationDropDown.add({focus : cameraGui.focus.bind(this, 0)}, 'focus').name("Previous Planet");
         navigationDropDown.open();
 
+        gui.add(time, 'time_delta', -5, 5).name("Time").listen();
+        gui.add(Time, 'reset_time').name("Reset Time");
         gui.add(SolarSystem, 'add_planet').name("Add Planet");
         gui.add(SolarSystem, 'reset').name("New Solar System"); //button to create a new solar system
 
@@ -314,6 +322,9 @@ function planet_camera() {
     planetDropdown.add(planets[camera.child_index], 'scale', 0.5, 2).name("Scale Value");
     planetDropdown.add(planets[camera.child_index], 'update_scale').name("Update Scale");
 
+    planetDropdown.add(planets[camera.child_index], 'add_ocean').name("Add Ocean");
+    planetDropdown.add(planets[camera.child_index], 'remove_ocean').name("Remove Ocean");
+
     planetDropdown.add(planets[camera.child_index], 'add_moon').name("Add Moon");
     planetDropdown.add(planets[camera.child_index], 'remove_moon').name("Remove Moon");
     planetDropdown.add(planets[camera.child_index], 'regenerate_terrain').name("Regenerate Terrain");
@@ -326,6 +337,8 @@ function planet_camera() {
     navigationDropDown.add({focus : cameraGui.focus.bind(this, 0)}, 'focus').name("Previous Planet");
     navigationDropDown.open();
 
+    gui.add(time, 'time_delta', -5, 5).name("Time").listen();
+    gui.add(Time, 'reset_time').name("Reset Time");
     gui.add(SolarSystem, 'add_planet').name("Add Planet");
     gui.add(SolarSystem, 'reset').name("New Solar System"); //button to create a new solar system
 }
@@ -364,6 +377,9 @@ function top_down_camera(){
       planetDropdown.add(planets[i], 'scale', 0.5, 2).name("Scale Value");
       planetDropdown.add(planets[i], 'update_scale').name("Update Scale");
 
+      planetDropdown.add(planets[i], 'add_ocean').name("Add Ocean");
+      planetDropdown.add(planets[i], 'remove_ocean').name("Remove Ocean");
+
       planetDropdown.add(planets[i], 'add_moon').name("Add Moon");
       planetDropdown.add(planets[i], 'remove_moon').name("Remove Moon");
       planetDropdown.add(planets[i], 'regenerate_terrain').name("Regenerate Terrain");
@@ -378,6 +394,8 @@ function top_down_camera(){
   navigationDropDown.add({focus : cameraGui.focus.bind(this, 0)}, 'focus').name("Previous Planet");
   navigationDropDown.open();
 
+  gui.add(time, 'time_delta', -5, 5).name("Time").listen();
+  gui.add(Time, 'reset_time').name("Reset Time");
   gui.add(SolarSystem, 'add_planet').name("Add Planet");
   gui.add(SolarSystem, 'reset').name("New Solar System"); //button to create a new solar system
 
@@ -412,18 +430,22 @@ function remove_from_array(array, object) {
 */
 class Time {
 
+    constructor(time_delta = 1){
+        this.time_delta = time_delta;
+    }
+
     static increase_time() {
-        if (time_delta+time_change <= 50)
-            time_delta += time_change;
+        if (time.time_delta+time_change <= 5)
+            time.time_delta += time_change;
     }
 
     static decrease_time() {
-        if (time_delta-time_change >= -50)
-            time_delta -= time_change;
+        if (time.time_delta-time_change >= -5)
+            time.time_delta -= time_change;
     }
 
     static reset_time() {
-        time_delta = 1;
+        time.time_delta = 1;
     }
 
 }

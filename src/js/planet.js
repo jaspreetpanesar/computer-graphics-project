@@ -258,7 +258,7 @@ class Planet {
 
 
     regenerate_terrain() {
-        this.model.material.uniforms.time.value = random_float(1, 10);
+        this.model.material.uniforms.time.value += 0.1;
     }
 
 

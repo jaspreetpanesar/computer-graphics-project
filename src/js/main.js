@@ -10,12 +10,13 @@ var running = false;
 var debug = false;
 var exists = false;
 
-var time_delta = 1;
-var time_change = 0.01;
+//var time_delta = 1;
+var time_change = 0.5;
 var camZoom = 1;
 
 var sun, starfield;
 
+var time;
 
 // runs function every frame to render scene changes on screen
 var updateloop = function() {
@@ -56,6 +57,8 @@ function load() {
 
     // default camera (perspective)
     camera = new CustomCamera();
+
+    time = new Time();
 
     // controls
     controls = new THREE.OrbitControls(camera.camera, renderer.domElement);
@@ -186,50 +189,6 @@ class SolarSystem {
             height: 5 * 32 - 1
         });
 
-        var CameraGui = function(){
-          this.goto = function(index){
-            camera.goto_planet(index);
-          };
-          this.focus = function(direction){
-            camera.change_focus(direction);
-          };
-        };
-
-        var cameraGui = new CameraGui();
-
-        for (var i=0; i<planets.length; i++){
-
-            var num = i + 1; //correct planet number
-            num = num.toString();
-            var planetDropdown = gui.addFolder("Planet " + num); //creates dropdown box for each planet
-
-            planetDropdown.add(planets[i], 'name').name("Name");
-
-            planetDropdown.add(planets[i], 'orbit_speed', 0.0001, 0.02).name("Orbit Speed");
-            planetDropdown.add(planets[i].rot_speed, 'y', 0.0001, 0.02).name("Rotation Speed");
-            planetDropdown.add(planets[i].moons, 'length').name("Number of Moons").listen();
-
-            planetDropdown.add(planets[i], 'scale', 0.5, 2).name("Scale Value");
-            planetDropdown.add(planets[i], 'update_scale').name("Update Scale");
-
-            planetDropdown.add(planets[i], 'add_moon').name("Add Moon");
-            planetDropdown.add(planets[i], 'remove_moon').name("Remove Moon");
-            planetDropdown.add(planets[i], 'regenerate_terrain').name("Regenerate Terrain");
-            //planetDropdown.add(camera, 'got')
-            //planetDropdown.add(SolarSystem, 'remove_planet').name("Remove Planet");
-            planetDropdown.close(); //dropdown box starts open
-
-        }
-
-        var navigationDropDown = gui.addFolder("Navigation"); //creates dropdown box for navigation
-        navigationDropDown.add(camera, 'toggle_mode').name("Toggle Camera");
-        navigationDropDown.add({focus : cameraGui.focus.bind(this, 1)}, 'focus').name("Next Planet");
-        navigationDropDown.add({focus : cameraGui.focus.bind(this, 0)}, 'focus').name("Previous Planet");
-        navigationDropDown.open();
-
-        gui.add(SolarSystem, 'add_planet').name("Add Planet");
-        gui.add(SolarSystem, 'reset').name("New Solar System"); //button to create a new solar system
-
         camera.change_mode("full");
     }
 
@@ -306,31 +265,46 @@ function planet_camera() {
 
     var num = camera.child_index + 1; //correct planet number
     num = num.toString();
-    var planetDropdown = gui.addFolder("Planet " + num); //creates dropdown box for each planet
 
-    planetDropdown.add(planets[camera.child_index], 'name').name("Name");
+    gui.add(planets[camera.child_index], 'name').name("Name");
+    gui.add(planets[camera.child_index], 'orbit_speed', 0.0001, 0.02).name("Orbit Speed");
+    gui.add(planets[camera.child_index].rot_speed, 'y', 0.0001, 0.02).name("Rotation Speed");
+    gui.add(planets[camera.child_index], 'regenerate_terrain').name("Regenerate Terrain");
 
-    planetDropdown.add(planets[camera.child_index], 'orbit_speed', 0.0001, 0.02).name("Orbit Speed");
-    planetDropdown.add(planets[camera.child_index].rot_speed, 'y', 0.0001, 0.02).name("Rotation Speed");
-    planetDropdown.add(planets[camera.child_index].moons, 'length').name("Number of Moons").listen();
+    var oceanDropdown = gui.addFolder("Ocean");
+    oceanDropdown.add(planets[camera.child_index], 'add_ocean').name("Add Ocean");
+    oceanDropdown.add(planets[camera.child_index], 'remove_ocean').name("Remove Ocean");
+    oceanDropdown.close();
 
-    planetDropdown.add(planets[camera.child_index], 'scale', 0.5, 2).name("Scale Value");
-    planetDropdown.add(planets[camera.child_index], 'update_scale').name("Update Scale");
+    var scaleDropdown = gui.addFolder("Scale");
+    scaleDropdown.add(planets[camera.child_index], 'scale', 0.5, 2).name("Scale Value");
+    scaleDropdown.add(planets[camera.child_index], 'update_scale').name("Update Scale");
+    scaleDropdown.close();
 
-    planetDropdown.add(planets[camera.child_index], 'add_moon').name("Add Moon");
-    planetDropdown.add(planets[camera.child_index], 'remove_moon').name("Remove Moon");
-    planetDropdown.add(planets[camera.child_index], 'regenerate_terrain').name("Regenerate Terrain");
-    planetDropdown.open(); //dropdown box starts open
+    var moonDropdown = gui.addFolder("Moons");
+    moonDropdown.add(planets[camera.child_index].moons, 'length').name("Number of Moons").listen();
+    moonDropdown.add(planets[camera.child_index], 'add_moon').name("Add Moon");
+    moonDropdown.add(planets[camera.child_index], 'remove_moon').name("Remove Moon");
+    moonDropdown.close(); //dropdown box starts open
+
+    var cameraDropdown = gui.addFolder("Camera");
+    cameraDropdown.add(camera, 'ZoomAdder').name("Zoom In [w]");
+    cameraDropdown.add(camera, 'ZoomSubtractor').name("Zoom Out (s)");
+    cameraDropdown.open();
 
     var navigationDropDown = gui.addFolder("Navigation"); //creates dropdown box for navigation
-    navigationDropDown.add(camera, 'toggle_mode').name("Toggle Camera");
-    navigationDropDown.add({focus : cameraGui.focus.bind(this, 1)}, 'focus').name("Next Planet");
-    navigationDropDown.add({focus : cameraGui.focus.bind(this, 0)}, 'focus').name("Previous Planet");
+    navigationDropDown.add(camera, 'toggle_mode').name("Toggle Camera [c]");
+    navigationDropDown.add({focus : cameraGui.focus.bind(this, 1)}, 'focus').name("Next Planet [e]");
+    navigationDropDown.add({focus : cameraGui.focus.bind(this, 0)}, 'focus').name("Previous Planet [q]");
     navigationDropDown.open();
 
-    gui.add(SolarSystem, 'add_planet').name("Add Planet");
-    gui.add(SolarSystem, 'remove_planet').name("Remove Planet");
-    gui.add(SolarSystem, 'reset').name("New Solar System"); //button to create a new solar system
+    var solarSystemDropdown = gui.addFolder("Solar System");
+    solarSystemDropdown.add(time, 'time_delta', -5, 5).name("Time [-] [=]").listen();
+    solarSystemDropdown.add(Time, 'reset_time').name("Reset Time [0]");
+    solarSystemDropdown.add(SolarSystem, 'add_planet').name("Add Planet");
+    solarSystemDropdown.add(SolarSystem, 'remove_planet').name("Remove Planet");
+    solarSystemDropdown.add(SolarSystem, 'reset').name("New Solar System"); //button to create a new solar system
+    solarSystemDropdown.open();
 }
 
 function top_down_camera(){
@@ -352,48 +326,40 @@ function top_down_camera(){
 
   var cameraGui = new CameraGui();
 
-  for (var i=0; i<planets.length; i++){
+  var planetDropdown = gui.addFolder("Planets"); //creates dropdown box for each planet
 
-      var num = i + 1; //correct planet number
-      num = num.toString();
-      var planetDropdown = gui.addFolder("Planet " + num); //creates dropdown box for each planet
+  for (var i=0; i<planets.length; i++){
 
       planetDropdown.add(planets[i], 'name').name("Name");
 
-      planetDropdown.add(planets[i], 'orbit_speed', 0.0001, 0.02).name("Orbit Speed");
-      planetDropdown.add(planets[i].rot_speed, 'y', 0.0001, 0.02).name("Rotation Speed");
-      planetDropdown.add(planets[i].moons, 'length').name("Number of Moons").listen();
-
-      planetDropdown.add(planets[i], 'scale', 0.5, 2).name("Scale Value");
-      planetDropdown.add(planets[i], 'update_scale').name("Update Scale");
-
-      planetDropdown.add(planets[i], 'add_moon').name("Add Moon");
-      planetDropdown.add(planets[i], 'remove_moon').name("Remove Moon");
-      planetDropdown.add(planets[i], 'regenerate_terrain').name("Regenerate Terrain");
-      planetDropdown.close(); //dropdown box starts open
-
   }
 
+  planetDropdown.open();
+
   var navigationDropDown = gui.addFolder("Navigation"); //creates dropdown box for navigation
-  navigationDropDown.add(camera, 'toggle_mode').name("Toggle Camera");
-  navigationDropDown.add({focus : cameraGui.focus.bind(this, 1)}, 'focus').name("Next Planet");
-  navigationDropDown.add({focus : cameraGui.focus.bind(this, 0)}, 'focus').name("Previous Planet");
+  navigationDropDown.add(camera, 'toggle_mode').name("Toggle Camera [c]");
+  navigationDropDown.add({focus : cameraGui.focus.bind(this, 1)}, 'focus').name("Next Planet [e]");
+  navigationDropDown.add({focus : cameraGui.focus.bind(this, 0)}, 'focus').name("Previous Planet [q]");
   navigationDropDown.open();
 
-  gui.add(SolarSystem, 'add_planet').name("Add Planet");
-  gui.add(SolarSystem, 'remove_planet').name("Remove Planet");
-  gui.add(SolarSystem, 'reset').name("New Solar System"); //button to create a new solar system
+  var solarSystemDropdown = gui.addFolder("Solar System");
+  solarSystemDropdown.add(time, 'time_delta', -5, 5).name("Time [-] [=]").listen();
+  solarSystemDropdown.add(Time, 'reset_time').name("Reset Time [0]");
+  solarSystemDropdown.add(SolarSystem, 'add_planet').name("Add Planet");
+  solarSystemDropdown.add(SolarSystem, 'remove_planet').name("Remove Planet");
+  solarSystemDropdown.add(SolarSystem, 'reset').name("New Solar System"); //button to create a new solar system
+  solarSystemDropdown.open();
 
 }
 
 
 function name_planet() {
     name_list = [
-        "Aegir", "Amateru", "Arion", "Arkas", "Brahe", "Dagon", "Dimidium", "Draugr", 
-        "Dulcinea", "Fortitudo", "Galileo", "Harriot", "Hypatia", "Janssen", "Lipperhey", 
-        "Majriti", "Meztli", "Orbitar", "Phobetor", "Poltergeist", "Quijote", "Rocinante", 
-        "Saffar", "Samh", "Smertrios", "Sancho", "Spe", "Tadmor", "Taphao", "Kaew", "Taphao", 
-        "Thong", "Thestias", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Pluto", 
+        "Aegir", "Amateru", "Arion", "Arkas", "Brahe", "Dagon", "Dimidium", "Draugr",
+        "Dulcinea", "Fortitudo", "Galileo", "Harriot", "Hypatia", "Janssen", "Lipperhey",
+        "Majriti", "Meztli", "Orbitar", "Phobetor", "Poltergeist", "Quijote", "Rocinante",
+        "Saffar", "Samh", "Smertrios", "Sancho", "Spe", "Tadmor", "Taphao", "Kaew", "Taphao",
+        "Thong", "Thestias", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Pluto",
         "Mercury", "Neptune", "Alpha", "Beta", "Centuri"
         ];
     roman_numerals = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
@@ -444,18 +410,22 @@ function remove_from_array(array, object) {
 */
 class Time {
 
+    constructor(time_delta = 1){
+        this.time_delta = time_delta;
+    }
+
     static increase_time() {
-        if (time_delta+time_change <= 50)
-            time_delta += time_change;
+        if (time.time_delta+time_change <= 5)
+            time.time_delta += time_change;
     }
 
     static decrease_time() {
-        if (time_delta-time_change >= -50)
-            time_delta -= time_change;
+        if (time.time_delta-time_change >= -5)
+            time.time_delta -= time_change;
     }
 
     static reset_time() {
-        time_delta = 1;
+        time.time_delta = 1;
     }
 
 }

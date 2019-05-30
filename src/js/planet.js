@@ -52,28 +52,26 @@ class Planet {
 
         this.geometry = new THREE.IcosahedronGeometry(radius, 5);
 
-        if (!this.is_moon)
-            this.material = new THREE.ShaderMaterial( {
-                uniforms: {
-                    time: {type: "f", value: random_float(1, 10)},
-                    weight: {type: "f", value: random_float(0.04*this.radius, 0.10*this.radius)},
-                    vcolor: {value: this.color},
-                    sunlight: {value: [0, 0, 0]}
-                },
-                vertexShader: document.getElementById('vertexShader').textContent,
-                fragmentShader: document.getElementById('fragmentShader').textContent,
-            });
+        // determine weight value
+        var weight;
+        if (is_moon)
+            weight = random_float(0.1*this.radius, 0.2*this.radius);
         else
-            this.material = new THREE.ShaderMaterial( {
-                uniforms: {
-                    time: {type: "f", value: random_float(1, 10)},
-                    weight: {type: "f", value: random_float(0.1*this.radius, 0.2*this.radius)},
-                    vcolor: {value: this.color},
-                    sunlight: {value: [0, 0, 0]}
-                },
-                vertexShader: document.getElementById('vertexShader').textContent,
-                fragmentShader: document.getElementById('fragmentShader').textContent,
-            });
+            if (has_ocean)
+                weight = random_float(0.1*this.radius, 0.2*this.radius);
+            else
+                weight = random_float(0.04*this.radius, 0.10*this.radius);
+
+        this.material = new THREE.ShaderMaterial( {
+            uniforms: {
+                time: {type: "f", value: random_float(1, 10)},
+                weight: {type: "f", value: weight},
+                vcolor: {value: this.color},
+                sunlight: {value: [0, 0, 0]}
+            },
+            vertexShader: document.getElementById('vertexShader').textContent,
+            fragmentShader: document.getElementById('fragmentShader').textContent,
+        });
 
         // generated fields
         // this.geometry = new THREE.SphereGeometry(radius, Planet.segments, Planet.segments);

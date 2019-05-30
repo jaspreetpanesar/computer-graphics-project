@@ -38,6 +38,8 @@ class Planet {
         'orbit_speed': {'min': 0.001, 'max': 0.015}
     }
 
+    regenerate = 0;
+
     constructor(name='planet', radius=5, position=new THREE.Vector3(), rotation=new THREE.Vector3(), rot_speed=new THREE.Vector3(), orbit_speed=0, parent_obj=null, has_ocean=false, is_moon=false) {
         this.name = name;
         this.radius = radius;
@@ -256,12 +258,19 @@ class Planet {
 
 
     regenerate_terrain() {
-        this.model.material.uniforms.time.value += 0.1;
+        // this.model.material.uniforms.time.value += 0.1;
+        // this.regenerate = this.model.material.uniforms.time.value + 1;
+        this.regenerate = 1;
     }
 
 
     update() {
         this.model.material.uniforms.sunlight.value = this.sun_direction();
+
+        if (this.regenerate > 0) {
+            this.model.material.uniforms.time.value += 0.01;
+            this.regenerate -= 0.01;
+        }
 
         if (this.parent_obj)
             this.orbit();

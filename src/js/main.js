@@ -430,9 +430,6 @@ class Time {
 
 }
 
-
-
-
 /*
    start renderer and update process
 */

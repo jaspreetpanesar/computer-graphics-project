@@ -64,6 +64,23 @@ class Planet {
             else
                 weight = random_float(0.04*this.radius, 0.10*this.radius);
 
+        // var customVertexShader = document.getElementById('newVertexShader').textContent;
+        // var customUniforms = THREE.UniformsUtils.merge([
+        //     THREE.ShaderLib.phong.uniforms,
+        //     {time: {type: "f", value: random_float(1, 10)}},
+        //     {weight: {type: "f", value: weight}},
+        //     {vcolor: {value: this.color}},
+        //     {sunlight: {value: [0, 0, 0]}}
+        //   ]);
+        // var terrainMaterial = new THREE.ShaderMaterial ({
+        //   uniforms: customUniforms,
+        //   vertexShader: customVertexShader,
+        //   fragmentShader: THREE.ShaderLib.phong.fragmentShader,
+        //   lights: true,
+        //   name: 'terrain-material'
+        // });
+        // this.material = terrainMaterial;
+
         this.material = new THREE.ShaderMaterial( {
             uniforms: {
                 time: {type: "f", value: random_float(1, 10)},

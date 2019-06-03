@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Interactive Planet</title>
+        <title>ISS</title>
         <style>
             body {
                 font-family: Monospace;
@@ -12,12 +12,15 @@
             }
             #title {
                 position: absolute;
-                top: 10px;
                 left: 25px;
                 width: 100%;
                 text-align: left;
-                font-size: 24px;
+                font-size: 48px;
                 font-weight: bold;
+            }
+            .highlight {
+              color:red;
+              font-size:64px;
             }
             #credits {
                 position: absolute;
@@ -29,7 +32,7 @@
     </head>
     <body>
         <div id="title">
-          <p>Awesome Title<br>of Awesomeness</p>
+          <p><span class="highlight">I</span>nteractive<br><span class="highlight">S</span>olar <span class="highlight"><br>S</span>ystem</p>
         </div>
         <div id="render"> </div>
         <div id="credits">
@@ -437,7 +440,7 @@
         <script>
 
             // fps display
-            javascript:(function(){var script=document.createElement('script');script.onload=function(){var stats=new Stats();document.body.appendChild(stats.dom);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='//mrdoob.github.io/stats.js/build/stats.min.js';document.head.appendChild(script);})()
+            // javascript:(function(){var script=document.createElement('script');script.onload=function(){var stats=new Stats();document.body.appendChild(stats.dom);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='//mrdoob.github.io/stats.js/build/stats.min.js';document.head.appendChild(script);})()
 
             load();
             start();

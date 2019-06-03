@@ -80,6 +80,7 @@ function load() {
     });
 
     SolarSystem.create();
+    planets[0].name = "Nico I";
 
     // start and stop elements updating using spacebar
     document.addEventListener('keydown', function(event) {
@@ -266,7 +267,7 @@ function planet_camera() {
     var num = camera.child_index + 1; //correct planet number
     num = num.toString();
 
-    gui.add(planets[camera.child_index], 'name').name("Name");
+    gui.add(planets[camera.child_index], 'name').name("Name").listen();
     gui.add(planets[camera.child_index], 'orbit_speed', 0.0001, 0.02).name("Orbit Speed");
     gui.add(planets[camera.child_index].rot_speed, 'y', 0.0001, 0.02).name("Rotation Speed");
     gui.add(planets[camera.child_index], 'regenerate_terrain').name("Regenerate Terrain");
@@ -330,7 +331,7 @@ function top_down_camera(){
 
   for (var i=0; i<planets.length; i++){
 
-      planetDropdown.add(planets[i], 'name').name("Name");
+      planetDropdown.add(planets[i], 'name').name("Name").listen();
 
   }
 
@@ -360,7 +361,8 @@ function name_planet() {
         "Majriti", "Meztli", "Orbitar", "Phobetor", "Poltergeist", "Quijote", "Rocinante",
         "Saffar", "Samh", "Smertrios", "Sancho", "Spe", "Tadmor", "Taphao", "Kaew", "Taphao",
         "Thong", "Thestias", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Pluto",
-        "Mercury", "Neptune", "Alpha", "Beta", "Centuri"
+        "Mercury", "Neptune", "Alpha", "Beta", "Centuri", "Brian", "Naboo", "Alderaan", "Tatooine",
+        "Coruscant", "Hoth", "Kashyyyk", "Hoth", "Bespin"
         ];
     roman_numerals = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
 

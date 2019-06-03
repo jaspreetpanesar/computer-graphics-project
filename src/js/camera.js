@@ -75,13 +75,13 @@ class CustomCamera {
 
 
     // start orbiting around specific planet
-    goto_planet(index) {
-        if (index < 0 || index >= planets.length)
-            return;
-        this.child_index = index;
-        this.change_mode("orbit");
-        this.change_child(planets[this.child_index]);
-    }
+  //  goto_planet(index) {
+    //    if (index < 0 || index >= planets.length)
+      //      return;
+      //  this.child_index = index;
+      //  this.change_mode("orbit");
+      //  this.change_child(planets[this.child_index]);
+    //}
 
 
     ZoomAdder(){

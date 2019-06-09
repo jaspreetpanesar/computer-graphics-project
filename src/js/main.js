@@ -444,11 +444,13 @@ function start() {
 
 function run() {
     running = true;
+    document.getElementById("pause_icon").style.display = "none";
     requestAnimationFrame(updateloop);
 }
 
 function stop() {
     running = false;
+    document.getElementById("pause_icon").style.display = "block";
 }
 
 function toggle_debug() {

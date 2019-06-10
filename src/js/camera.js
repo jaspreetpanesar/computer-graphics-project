@@ -29,6 +29,8 @@ class CustomCamera {
             this.camera.position.set(0, 1000, 0);
             this.camera.lookAt(0, 0, 0);
             this.mode = "full";
+            document.getElementById("title").style.display = "block";
+            document.getElementById("planet_info").style.display = "none";
             top_down_camera();
         }
     }
@@ -43,6 +45,8 @@ class CustomCamera {
             if (planets.length > 0) {
                 this.child_index = 0;
                 this.change_mode("orbit");
+                document.getElementById("title").style.display = "none";
+                document.getElementById("planet_info").style.display = "block";
                 this.goto_planet(0);
                 planet_camera();
             }
@@ -57,7 +61,13 @@ class CustomCamera {
 
     // directions 0 (backward) or 1 (forward)
     change_focus(direction) {
+        if (planets.length <= 0)
+            return;
+
         this.change_mode("orbit");
+        document.getElementById("title").style.display = "none";
+        document.getElementById("planet_info").style.display = "block";
+
         if (direction == 1) {
             this.child_index += 1;
             if (this.child_index > planets.length-1)
@@ -116,6 +126,8 @@ class CustomCamera {
                     this.child.get_world_position('y'),
                     this.child.get_world_position('z')
                 );
+
+                this.child.update_description();
             }
         }
     }

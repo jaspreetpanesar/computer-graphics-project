@@ -13,6 +13,8 @@ var exists = false;
 //var time_delta = 1;
 var time_change = 0.5;
 var camZoom = 1;
+// var ambientLightColor = new THREE.Color(0.12, 0.12, 0.12);
+var ambientLightColor = new THREE.Color(0.5, 0.5, 0.5);
 
 var sun, starfield;
 
@@ -172,7 +174,7 @@ class SolarSystem {
 
     static create() {
 
-        ambientlight = new THREE.AmbientLight(new THREE.Color(0.12, 0.12, 0.12));
+        ambientlight = new THREE.AmbientLight(ambientLightColor);
         scene.add(ambientlight);
 
         starfield = new Starfield();
@@ -267,10 +269,11 @@ function planet_camera() {
     var num = camera.child_index + 1; //correct planet number
     num = num.toString();
 
-    gui.add(planets[camera.child_index], 'name').name("Name").listen();
-    gui.add(planets[camera.child_index], 'orbit_speed', 0.0001, 0.02).name("Orbit Speed");
-    gui.add(planets[camera.child_index].rot_speed, 'y', 0.0001, 0.02).name("Rotation Speed");
-    gui.add(planets[camera.child_index], 'regenerate_terrain').name("Regenerate Terrain");
+    var planetDropdown = gui.addFolder("Planet");
+    planetDropdown.add(planets[camera.child_index], 'orbit_speed', 0.0001, 0.02).name("Orbit Speed");
+    planetDropdown.add(planets[camera.child_index].rot_speed, 'y', 0.0001, 0.02).name("Rotation Speed");
+    planetDropdown.add(planets[camera.child_index], 'regenerate_terrain').name("Regenerate Terrain");
+    planetDropdown.open();
 
     var oceanDropdown = gui.addFolder("Ocean");
     oceanDropdown.add(planets[camera.child_index], 'add_ocean').name("Add Ocean");
@@ -371,7 +374,7 @@ function name_planet() {
 
     // loop used to re-generate name in case there are duplicates
     while (copy) {
-        name = name_list[random_number(0, name_list.length)] + " " + roman_numerals[random_number(0, roman_numerals.length-1)];
+        name = name_list[random_number(0, name_list.length-1)] + " " + roman_numerals[random_number(0, roman_numerals.length-1)];
         copy = false;
         for (var i=0; i<planets.length; i++) {
             if (planets[i].name == name)
@@ -456,7 +459,7 @@ function stop() {
 function toggle_debug() {
     if (debug) {
         debug = false;
-        ambientlight.color = new THREE.Color(0.12, 0.12, 0.12);
+        ambientlight.color = new THREE.Color(ambientLightColor);
     }
     else {
         debug = true;

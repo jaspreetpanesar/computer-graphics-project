@@ -30,17 +30,52 @@
             }
             #pause_icon {
                 position: absolute;
-                bottom: 65%;
-                top: 35%;
-                left: 45%;
-                right: 55%;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
                 display: none;
+            }
+            #planet_info {
+                border-radius: 5px 25px;
+                position: absolute;
+                top: 20px;
+                left: 25px;
+                text-align: left;
+                display: none;
+                background: rgb(20, 20, 20);
+                padding: 15px;
+                max-width: 400px;
+                opacity: 0.9;
+            }
+            .planet_info_text {
+                font-size: 18px;
+            }
+            .planet_info_title {
+                font-size: 18px;
+                font-weight: bold;
+                color: red;
             }
         </style>
     </head>
     <body>
         <div id="pause_icon"> 
-            <img src="textures/pause_icon.png">
+            <img style="opacity: 0.9" src="textures/pause_icon.png">
+        </div>
+
+        <div id="planet_info">
+          <span style="font-size: 24px;" class="planet_info_text">Planet Name</span>
+          <br><br><span class="planet_info_title">Moons: </span>
+              <span class="planet_info_text"></span>
+          <br><span class="planet_info_title">Life: </span>
+              <span class="planet_info_text"></span>
+          <br><span class="planet_info_title">Terrain: </span>
+              <span class="planet_info_text"></span>
+          <br><span class="planet_info_title">Ocean: </span>
+              <span class="planet_info_text"></span>
+          <br><span class="planet_info_title">Size: </span>
+              <span class="planet_info_text"></span>
+          <br><span class="planet_info_title">Climate: </span>
+              <span class="planet_info_text"></span>
         </div>
 
         <div id="title">
@@ -53,9 +88,6 @@
           <p>Created by Brendan Micallef, Laith Noaman, Jonathon Noujaim, Jaspreet Panesar and Zenne Randerath</p>
         </div>
 
-        <div id="planet_info">
-          <p>Planet Info Test</p>
-        </div>
 
 
         <!-- shaders -->

@@ -64,6 +64,8 @@ class Planet {
             else
                 weight = random_float(0.04*this.radius, 0.10*this.radius);
 
+        this.weight = weight;
+
         // var customVertexShader = document.getElementById('newVertexShader').textContent;
         // var customUniforms = THREE.UniformsUtils.merge([
         //     THREE.ShaderLib.phong.uniforms,
@@ -116,6 +118,7 @@ class Planet {
         if (has_ocean) {
             this.add_ocean();
         } else {
+            this.has_ocean = false;
             this.ocean = null;
         }
 
@@ -280,6 +283,89 @@ class Planet {
         this.regenerate = 1;
     }
 
+    
+    update_description() {
+        var desc_box = document.getElementById("planet_info");
+        desc_box.children[0].innerHTML = this.name;
+
+        // moons
+        var moon_desc = "";
+        if (this.moons.length <= 0)
+            moon_desc = "no moons";
+        else {
+            if (this.moons.length == 1)
+                moon_desc = "1 moon";
+            else
+                moon_desc = this.moons.length + " moons";
+        }
+        desc_box.children[4].innerHTML = moon_desc;
+
+        // habitable
+        var habitable = "";
+        if (this.has_ocean && (this.position.x >= 400 && this.position.x <= 700))
+            habitable = "habitable";
+        else
+            habitable = "unsuitable";
+        desc_box.children[7].innerHTML = habitable;
+
+        // terrain description (using weight)
+        var terrain;
+        var weight = this.weight/this.radius;
+        if (weight <= 0.05)
+            terrain = "gentle graded plains";
+        if (weight <= 0.09)
+            terrain = "gradual hills";
+        else if (weight <= 0.15)
+            terrain = "mountainous slopes";
+        else if (weight > 0.15)
+            terrain = "sheer dramatic peaks";
+        else
+            terrain = "unknown";
+        desc_box.children[10].innerHTML = terrain;
+
+        // ocean tide
+        var ocean_desc = "";
+        if (this.has_ocean)
+            ocean_desc = this.ocean.tide;
+        else
+            ocean_desc = "no ocean";
+        desc_box.children[13].innerHTML = ocean_desc;
+
+        // planet size (+ scale) tiny, small, medium, large, giant
+        var size_desc = "";
+        var size = this.radius * this.scale;
+        if (size < 3)
+            size_desc = "dwarf";
+        else if (size <= 3)
+            size_desc = "small";
+        else if (size <= 4.5)
+            size_desc = "medium";
+        else if (size <= 6)
+            size_desc = "large";
+        else if (size > 6)
+            size_desc = "giant";
+        else
+            size_desc = "unknown";
+        desc_box.children[16].innerHTML = size_desc;
+
+        // temperature
+        var temp;
+        if (this.position.x <= 300)
+            temp = "burning";
+        else if (this.position.x <= 400)
+            temp = "tropical";
+        else if (this.position.x <= 500)
+            temp = "temperate";
+        else if (this.position.x <= 600)
+            temp = "very cold";
+        else if (this.position.x <= 700)
+            temp = "freezing";
+        else
+            temp = "unknown";
+
+        desc_box.children[19].innerHTML = temp;
+    }
+
 
     update() {
         this.model.material.uniforms.sunlight.value = this.sun_direction();
@@ -293,8 +379,7 @@ class Planet {
             this.orbit();
 
         this.rotate();
-
-        if (this.ocean)
+if (this.ocean)
             this.ocean.update();
     }
 
